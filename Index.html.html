@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Next Step - Future Me, Future You, Future Now</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .bg-sage-100 { background-color: #e8f0ec; }
+    .bg-sage-600 { background-color: #6b8e7e; }
+    .bg-sage-700 { background-color: #557365; }
+    .text-sage-700 { color: #557365; }
+    .text-sage-800 { color: #3d5248; }
+    .border-sage-300 { border-color: #b8d1c4; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- ==================== AUTH / LOGIN SCREEN ==================== -->
+  <div id="auth-screen" class="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-x-hidden">
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-1/4 left-1/3 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="w-full max-w-xl bg-slate-800/90 backdrop-blur-md border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-8 z-10 my-8">
+      
+      <div class="flex flex-col items-center mb-6 text-center">
+        <div class="p-3 bg-gradient-to-tr from-sky-400 via-purple-400 to-emerald-400 rounded-2xl shadow-lg mb-3">
+          <i data-lucide="graduation-cap" class="w-10 h-10 text-white"></i>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-sky-300 via-purple-200 to-emerald-300 bg-clip-text text-transparent">
+          Next Step
+        </h1>
+        
+        <div class="inline-block mt-2 px-3.5 py-1 bg-gradient-to-r from-sky-500/20 via-purple-500/20 to-emerald-500/20 border border-sky-300/30 rounded-full">
+          <p class="text-xs sm:text-sm font-extrabold tracking-wider uppercase bg-gradient-to-r from-sky-300 via-purple-200 to-emerald-200 bg-clip-text text-transparent">
+            Future Me, Future You, Future Now
+          </p>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-400 mt-2">
+          FAFSA, TAP, Scholarships, Test Prep, Peer Mentors & Earned Rewards
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 bg-slate-900/60 p-1 rounded-xl mb-6 border border-slate-700/50 text-xs sm:text-sm">
+        <button id="btn-mode-login" onclick="setAuthMode('login')" class="py-2 font-medium rounded-lg transition-all bg-sky-500 text-white shadow-md">
+          Sign In
+        </button>
+        <button id="btn-mode-signup" onclick="setAuthMode('signup')" class="py-2 font-medium rounded-lg transition-all text-slate-400 hover:text-slate-200">
+          Student Signup
+        </button>
+        <button id="btn-mode-mentor" onclick="setAuthMode('mentor')" class="py-2 font-medium rounded-lg transition-all text-slate-400 hover:text-slate-200">
+          Apply as Mentor/Tutor
+        </button>
+      </div>
+
+      <form id="student-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div id="field-name" class="hidden">
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
+          <input type="text" id="input-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="e.g. Alex Rivera" value="Alex Rivera">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
+          <input type="email" required id="input-email" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="student@example.com" value="alex.rivera@example.com">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Password</label>
+          <input type="password" required id="input-password" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="••••••••" value="password123">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Unweighted GPA</label>
+            <input type="number" step="0.01" min="0" max="4.0" required id="input-gpa" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="3.4" value="3.4">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Max Budget / Yr ($)</label>
+            <input type="number" step="500" required id="input-budget" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="18000" value="18000">
+          </div>
+        </div>
+
+        <button type="submit" id="btn-auth-submit" class="w-full mt-2 py-3 bg-gradient-to-r from-sky-400 via-purple-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 text-slate-950 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+          <span>Sign In to Next Step</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <div id="mentor-form-container" class="hidden space-y-4">
+        <div class="bg-purple-950/70 border border-purple-700/60 rounded-xl p-4 text-xs space-y-2">
+          <div class="flex items-center gap-1.5 font-bold text-purple-300">
+            <i data-lucide="award" class="w-4 h-4 text-purple-400"></i>
+            Why Become a Mentor or Test Prep Tutor?
+          </div>
+          <ul class="grid grid-cols-2 gap-2 text-slate-300">
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Signed Volunteer Hours</li>
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> College Course Credit</li>
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Paid Tutoring Options</li>
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Leadership Experience</li>
+          </ul>
+        </div>
+
+        <form onsubmit="handleMentorSubmit(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
+            <input type="text" required placeholder="e.g. Jordan Smith" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">University / College</label>
+              <input type="text" required placeholder="e.g. Columbia Univ" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Major / ACT or SAT Score</label>
+              <input type="text" required placeholder="e.g. Bio / ACT 35" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3 mt-3 bg-gradient-to-r from-purple-500 to-sky-500 hover:from-purple-400 hover:to-sky-400 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+            Submit Application
+          </button>
+        </form>
+      </div>
+
+      <div id="mentor-success" class="hidden text-center py-6 space-y-4">
+        <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/40">
+          <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Application Received!</h3>
+        <p class="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
+          Thank you for applying to empower students! Our team will verify your school enrollment and test scores within 24–48 hours.
+        </p>
+        <button onclick="setAuthMode('login')" class="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-white">
+          Back to Student Login
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APP DASHBOARD ==================== -->
+  <div id="app-dashboard" class="hidden flex-1 flex flex-col">
+    <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md border-b border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('fafsa')">
+            <div class="p-2 bg-gradient-to-br from-sky-400 via-purple-400 to-emerald-400 rounded-xl shadow">
+              <i data-lucide="graduation-cap" class="w-6 h-6 text-slate-950"></i>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-sky-100 to-purple-200 bg-clip-text text-transparent">Next Step</span>
+                <span class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-sky-950/80 text-sky-300 rounded-full border border-sky-700/50">NY & Federal Aid</span>
+              </div>
+              <span class="text-[10px] font-bold tracking-wider uppercase text-sky-300/90 -mt-0.5">Future Me, Future You, Future Now</span>
+            </div>
+          </div>
+
+          <!-- Top Navigation Header with Live Points Counter -->
+          <div class="flex items-center gap-3">
+            <button onclick="switchTab('rewards')" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 border border-amber-400/40 rounded-xl text-amber-300 hover:bg-amber-500/30 transition-all text-xs font-bold">
+              <i data-lucide="trophy" class="w-4 h-4 text-amber-400 animate-bounce"></i>
+              <span id="user-display-points">200</span> Points
+            </button>
+
+            <button onclick="openProfileModal()" class="hidden md:flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs transition-colors">
+              <i data-lucide="user" class="w-3.5 h-3.5 text-sky-400"></i>
+              <span id="user-display-name" class="font-medium text-slate-200">Alex Rivera</span>
+              <span class="text-slate-500">|</span>
+              <span class="text-slate-400">GPA: <strong id="user-display-gpa" class="text-sky-300">3.4</strong></span>
+              <span class="text-slate-500">|</span>
+              <span class="text-slate-400">Budget: <strong id="user-display-budget" class="text-emerald-300">$18,000/yr</strong></span>
+              <i data-lucide="edit-3" class="w-3 h-3 text-slate-400 ml-1"></i>
+            </button>
+
+            <button onclick="handleLogout()" class="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-1.5 text-xs font-medium">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/95 border-t border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 overflow-x-auto scrollbar-none">
+          <button id="nav-fafsa" onclick="switchTab('fafsa')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 whitespace-nowrap">
+            <i data-lucide="file-check" class="w-4 h-4"></i> FAFSA & TAP Aid
+          </button>
+          <button id="nav-rewards" onclick="switchTab('rewards')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i> Gift Shop & Merch
+          </button>
+          <button id="nav-scholarships" onclick="switchTab('scholarships')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="award" class="w-4 h-4"></i> Scholarships (<span id="saved-sch-count">0</span>)
+          </button>
+          <button id="nav-testprep" onclick="switchTab('testprep')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="target" class="w-4 h-4 text-emerald-400"></i> ACT / SAT Prep & Tutors
+          </button>
+          <button id="nav-matcher" onclick="switchTab('matcher')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="building" class="w-4 h-4"></i> College Matcher
+          </button>
+          <button id="nav-mentors" onclick="switchTab('mentors')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="users" class="w-4 h-4"></i> Connect Mentors
+          </button>
+          <button id="nav-internships" onclick="switchTab('internships')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="briefcase" class="w-4 h-4"></i> Internships
+          </button>
+          <button id="nav-advisor" onclick="switchTab('advisor')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="sparkles" class="w-4 h-4 text-purple-300 animate-pulse"></i> AI Advisor
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      
+      <!-- TAB 1: FAFSA & TAP AID -->
+      <section id="tab-fafsa" class="space-y-6">
+        <div class="bg-gradient-to-r from-sky-600 via-purple-700 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+          <div class="relative z-10 max-w-2xl">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-sky-400/30 to-purple-400/30 border border-sky-300/40 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold text-sky-100 tracking-wide uppercase mb-3">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-200"></i> Complete Tasks to Earn +100 Points Each!
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">FAFSA & New York TAP Readiness Portal</h2>
+            <p class="mt-2 text-sm sm:text-base text-sky-100 leading-relaxed">
+              Completing your FAFSA and TAP applications is the #1 step to securing non-repayable grants. Check off tasks below to earn points for free college merch and gift cards!
+            </p>
+            <div class="mt-6 bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-xl">
+              <div class="flex justify-between items-center text-xs font-semibold text-slate-200 mb-2">
+                <span>Application Checklist Progress</span>
+                <span id="checklist-progress-text" class="text-sky-300">0 of 6 Complete (0%)</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                <div id="checklist-progress-bar" class="bg-gradient-to-r from-sky-400 via-purple-300 to-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Step-by-Step Aid Roadmap (+100 PTS Per Check)</h3>
+              <p class="text-xs text-slate-500">Check off completed steps to keep your financial aid application on track and earn shop points.</p>
+            </div>
+            <button onclick="resetChecklist()" class="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1">
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i> Reset Tasks
+            </button>
+          </div>
+          <div id="checklist-container" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- TAB 2: GIFT SHOP & REWARDS -->
+      <section id="tab-rewards" class="hidden space-y-6">
+        <div class="bg-gradient-to-r from-amber-600 via-orange-600 to-purple-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="max-w-xl space-y-2">
+              <div class="inline-flex items-center gap-2 bg-amber-400/20 border border-amber-300/30 px-3.5 py-1 rounded-full text-xs font-bold text-amber-200 uppercase tracking-wide">
+                <i data-lucide="trophy" class="w-3.5 h-3.5 text-amber-300"></i> Next Step Student Gift Shop
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Turn Your Progress into Free Merch & Cards!</h2>
+              <p class="text-sm text-amber-100 leading-relaxed">
+                Earn 100 points for every FAFSA step completed, scholarship saved, or tutor session requested. Redeem points below for official college apparel or $5 gift cards!
+              </p>
+            </div>
+
+            <!-- Current Balance Card -->
+            <div class="bg-slate-900/80 backdrop-blur-md border border-amber-400/30 p-5 rounded-2xl text-center flex flex-col items-center shrink-0 min-w-[200px]">
+              <span class="text-xs font-bold text-amber-300 uppercase tracking-wider">Your Balance</span>
+              <div class="flex items-center gap-2 my-1">
+                <i data-lucide="award" class="w-7 h-7 text-amber-400"></i>
+                <span id="rewards-balance-text" class="text-3xl font-extrabold text-white">200</span>
+              </div>
+              <span class="text-[11px] text-slate-400">Points Available</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- How to Earn Points Guide -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-xs">
+            <div class="p-3 bg-sky-100 text-sky-600 rounded-xl font-bold">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 block text-sm">Complete Aid Steps</strong>
+              <span class="text-slate-500">+100 Points for each FAFSA or TAP checklist step finished.</span>
+            </div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-xs">
+            <div class="p-3 bg-emerald-100 text-emerald-600 rounded-xl font-bold">
+              <i data-lucide="target" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 block text-sm">Test Prep & Tutors</strong>
+              <span class="text-slate-500">+100 Points for requesting a session with an ACT/SAT tutor.</span>
+            </div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 shadow-xs">
+            <div class="p-3 bg-purple-100 text-purple-600 rounded-xl font-bold">
+              <i data-lucide="bookmark" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 block text-sm">Scholarship Tracker</strong>
+              <span class="text-slate-500">+50 Points for adding or saving financial aid scholarships.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rewards Shop Item Grid -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="shopping-bag" class="w-5 h-5 text-amber-600"></i>
+              Available Rewards & Merch
+            </h3>
+            <span class="text-xs text-slate-500 font-medium">Free Shipping Included on Merch</span>
+          </div>
+          <div id="rewards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: SCHOLARSHIPS -->
+      <section id="tab-scholarships" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900">Scholarship Finder & Tracker</h2>
+            <p class="text-xs text-slate-500 mt-1">Browse top grants and merit awards. Save ones you like or add custom scholarships.</p>
+          </div>
+          <button onclick="openAddScholarshipModal()" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-xl shadow flex items-center gap-1.5 self-start md:self-auto">
+            <i data-lucide="plus" class="w-4 h-4"></i> Add Custom Scholarship
+          </button>
+        </div>
+        <div id="scholarships-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
+
+      <!-- TAB 4: ACT/SAT PREP & TUTORS -->
+      <section id="tab-testprep" class="hidden space-y-6">
+        <div class="bg-gradient-to-r from-emerald-700 via-teal-800 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+          <div class="max-w-2xl">
+            <div class="inline-flex items-center gap-2 bg-emerald-400/20 border border-emerald-300/30 px-3.5 py-1 rounded-full text-xs font-bold text-emerald-200 uppercase tracking-wide mb-3">
+              <i data-lucide="target" class="w-3.5 h-3.5 text-emerald-300"></i> Top-Tier Score Accelerator
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Aim for ACT 30–36 / SAT 1360–1600</h2>
+            <p class="mt-2 text-sm text-emerald-100 leading-relaxed">
+              Master the exact pacing, section strategies, and high-frequency problem types needed to hit top 95th+ percentile scores. Connect 1-on-1 with college tutors who scored 34+ on the ACT or 1500+ on the SAT.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Connect with Verified ACT/SAT Tutors</h3>
+              <p class="text-xs text-slate-500">Current college students & alumni with verified 99th percentile scores.</p>
+            </div>
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-200 self-start sm:self-auto">
+              Verified 34+ ACT / 1500+ SAT
+            </span>
+          </div>
+          <div id="tutors-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+      </section>
+
+      <!-- TAB 5: COLLEGE MATCHER -->
+      <section id="tab-matcher" class="hidden space-y-6">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="filter" class="w-5 h-5 text-sky-600"></i>
+            <h2 class="text-lg font-bold text-slate-900">Filter Colleges by Your Profile</h2>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Your GPA Target</label>
+              <input type="number" step="0.1" id="filter-gpa" onchange="renderColleges()" onkeyup="renderColleges()" value="3.2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Max In-State Tuition ($/yr)</label>
+              <input type="number" step="1000" id="filter-budget" onchange="renderColleges()" onkeyup="renderColleges()" value="25000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Institution Type</label>
+              <select id="filter-type" onchange="renderColleges()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+                <option value="All">All Types</option>
+                <option value="Public">Public State / City</option>
+                <option value="Private">Private</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Search Keywords</label>
+              <input type="text" id="filter-search" onkeyup="renderColleges()" placeholder="Name, city, or major..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+            </div>
+          </div>
+        </div>
+
+        <div id="colleges-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- TAB 6: MENTORS -->
+      <section id="tab-mentors" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="users" class="w-6 h-6 text-sky-600"></i>
+              Connect with Peer Mentors & Alumni
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Get 1-on-1 advice from current college students and alumni who recently navigated FAFSA and admissions.</p>
+          </div>
+        </div>
+        <div id="mentors-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
+
+      <!-- TAB 7: INTERNSHIPS -->
+      <section id="tab-internships" class="hidden space-y-6">
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="briefcase" class="w-6 h-6 text-purple-600"></i>
+              High School & College Internships
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Discover summer research programs, tech fellowships, paid internships, and volunteer leadership roles.</p>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl text-xs font-medium">
+            <button onclick="setInternshipFilter('All')" id="int-btn-All" class="px-3 py-1.5 rounded-lg bg-white shadow font-bold text-slate-900">All</button>
+            <button onclick="setInternshipFilter('High School')" id="int-btn-HS" class="px-3 py-1.5 rounded-lg text-slate-600">High School</button>
+            <button onclick="setInternshipFilter('College')" id="int-btn-College" class="px-3 py-1.5 rounded-lg text-slate-600">College Undergrad</button>
+          </div>
+        </div>
+
+        <div id="internships-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
+
+      <!-- TAB 8: AI ADVISOR CHAT -->
+      <section id="tab-advisor" class="hidden max-w-4xl mx-auto space-y-4">
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col h-[650px] overflow-hidden">
+          <div class="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-gradient-to-tr from-sky-400 to-purple-400 rounded-xl shadow">
+                <i data-lucide="sparkles" class="w-5 h-5 text-slate-950"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm">Next Step AI Advisor</h3>
+                <p class="text-[11px] text-slate-300">Always active & ready to help</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50/50"></div>
+
+          <div class="p-2 bg-slate-100 border-t border-slate-200 flex gap-2 overflow-x-auto text-xs scrollbar-none">
+            <button onclick="sendQuickPrompt('How do I raise my ACT score to 34+?')" class="px-3 py-1.5 bg-white border border-slate-200 hover:border-emerald-400 text-slate-700 rounded-full whitespace-nowrap">🎯 Raise ACT to 34+</button>
+            <button onclick="sendQuickPrompt('How do I fill out FAFSA step-by-step?')" class="px-3 py-1.5 bg-white border border-slate-200 hover:border-sky-400 text-slate-700 rounded-full whitespace-nowrap">💡 How do I fill out FAFSA?</button>
+            <button onclick="sendQuickPrompt('How do I earn points for the gift shop?')" class="px-3 py-1.5 bg-white border border-slate-200 hover:border-amber-400 text-slate-700 rounded-full whitespace-nowrap">🎁 Earn Points for Merch</button>
+          </div>
+
+          <div class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+            <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') sendChatMessage()" placeholder="Ask a question about ACT/SAT, colleges, aid, rewards shop..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-sky-400">
+            <button onclick="sendChatMessage()" class="p-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl shadow">
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- REWARD REDEEM MODAL -->
+  <div id="redeem-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+      <div id="redeem-form-content">
+        <h3 id="modal-item-title" class="font-bold text-slate-900 text-base mb-1"></h3>
+        <p id="modal-item-cost" class="text-xs text-amber-600 font-bold mb-4"></p>
+        
+        <form onsubmit="submitRedeemModal(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Shipping Address / Delivery Email</label>
+            <input type="text" required id="redeem-address" placeholder="123 College Ave, New York, NY 10001" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Select Size or Preferred Retailer (If applicable)</label>
+            <select id="redeem-option" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-amber-500">
+              <option value="Default / Digital Code">Standard Size / Digital Gift Code</option>
+              <option value="Medium Shirt">Medium (Merch)</option>
+              <option value="Large Shirt">Large (Merch)</option>
+              <option value="XL Shirt">XL (Merch)</option>
+            </select>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" onclick="closeRedeemModal()" class="px-4 py-2 bg-slate-100 text-slate-600 font-semibold rounded-xl">Cancel</button>
+            <button type="submit" class="px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold rounded-xl shadow">Confirm Redemption</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="redeem-success-content" class="hidden text-center py-6 space-y-3">
+        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+          <i data-lucide="gift" class="w-7 h-7"></i>
+        </div>
+        <h4 class="font-bold text-slate-900">Reward Claimed!</h4>
+        <p class="text-xs text-slate-500 max-w-xs mx-auto">
+          Your redemption order has been placed! Digital codes arrive instantly via email; merch orders ship within 3–5 business days.
+        </p>
+        <button onclick="closeRedeemModal()" class="px-5 py-2 bg-slate-800 text-white text-xs font-semibold rounded-xl">Back to Shop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT PROFILE MODAL -->
+  <div id="profile-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-900 text-base">Edit Student Profile</h3>
+        <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveProfileChanges(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Full Name</label>
+          <input type="text" id="edit-profile-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Unweighted GPA</label>
+            <input type="number" step="0.01" min="0" max="4.0" id="edit-profile-gpa" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Max Budget ($/yr)</label>
+            <input type="number" step="500" id="edit-profile-budget" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeProfileModal()" class="px-4 py-2 bg-slate-100 text-slate-600 font-semibold rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-xl shadow">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADD SCHOLARSHIP MODAL -->
+  <div id="add-sch-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-900 text-base">Add New Scholarship</h3>
+        <button onclick="closeAddScholarshipModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveCustomScholarship(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Scholarship Title</label>
+          <input type="text" id="new-sch-title" required placeholder="e.g. Community Leadership Grant" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Provider / Organization</label>
+          <input type="text" id="new-sch-provider" required placeholder="e.g. Local Foundation" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Amount ($/yr)</label>
+            <input type="number" id="new-sch-amount" required placeholder="2500" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Deadline Date</label>
+            <input type="date" id="new-sch-deadline" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Description</label>
+          <textarea id="new-sch-desc" required rows="2" placeholder="Short description of requirements..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-800 focus:outline-none focus:border-sky-400"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeAddScholarshipModal()" class="px-4 py-2 bg-slate-100 text-slate-600 font-semibold rounded-xl">Cancel</button>
+          <button type="submit" class="px-5 py-2 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-xl shadow">Add Scholarship</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TUTOR REQUEST MODAL -->
+  <div id="tutor-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+      <div id="tutor-form-content">
+        <h3 id="modal-tutor-title" class="font-bold text-slate-900 text-base mb-1"></h3>
+        <p id="modal-tutor-sub" class="text-xs text-emerald-600 font-semibold mb-4"></p>
+        <form onsubmit="submitTutorModal(event)" class="space-y-3">
+          <textarea required rows="3" id="modal-tutor-note" placeholder="Hi! My current score is 27 ACT / 1250 SAT. I need help reaching 34+ ACT or 1500+ SAT, specifically on Math/Science pacing..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-emerald-500"></textarea>
+          <div class="flex justify-end gap-2">
+            <button type="button" onclick="closeTutorModal()" class="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow">Request Tutor Session (+100 PTS)</button>
+          </div>
+        </form>
+      </div>
+      <div id="tutor-success-content" class="hidden text-center py-6 space-y-3">
+        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+          <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+        </div>
+        <h4 class="font-bold text-slate-900">Tutoring Request Sent!</h4>
+        <p class="text-xs text-slate-500">Your tutor will review your goals and reach out. You earned +100 Points!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = JSON.parse(localStorage.getItem('nextstep_user')) || null;
+    let savedScholarships = JSON.parse(localStorage.getItem('nextstep_saved_sch')) || ['sch-1', 'sch-3'];
+    let userPoints = parseInt(localStorage.getItem('nextstep_points')) || 200;
+    let selectedRedeemItem = null;
+    let currentFilterAudience = 'All';
+
+    let checklistData = JSON.parse(localStorage.getItem('nextstep_checklist')) || [
+      { id: 1, title: 'Create StudentAid.gov Account (FSA ID)', done: true, tag: 'FAFSA' },
+      { id: 2, title: 'Gather tax documents (Prior-Prior Year W-2 & 1040)', done: true, tag: 'FAFSA' },
+      { id: 3, title: 'Fill out FAFSA demographic info & add preferred schools', done: false, tag: 'FAFSA' },
+      { id: 4, title: 'Sign and submit FAFSA with student & parent FSA IDs', done: false, tag: 'FAFSA' },
+      { id: 5, title: 'Link to NYS TAP Application via FAFSA submission page', done: false, tag: 'TAP' },
+      { id: 6, title: 'Complete HESC TAP profile and confirm NYS school code', done: false, tag: 'TAP' },
+    ];
+
+    const rewardsData = [
+      { id: 'rew-1', title: '$5 Amazon Gift Card', cost: 300, category: 'Gift Card', icon: 'credit-card', desc: 'Instant digital code for school supplies, books, or electronics.' },
+      { id: 'rew-2', title: '$5 Target Gift Card', cost: 300, category: 'Gift Card', icon: 'shopping-cart', desc: 'Digital code delivered directly to your email.' },
+      { id: 'rew-3', title: '$5 Starbucks Gift Card', cost: 300, category: 'Gift Card', icon: 'coffee', desc: 'Grab a coffee before your next study session or test prep practice.' },
+      { id: 'rew-4', title: 'Official College Pennant', cost: 500, category: 'Merch', icon: 'flag', desc: 'Custom felt pennant for Columbia, NYU, SUNY, or CUNY.' },
+      { id: 'rew-5', title: 'College Logo T-Shirt', cost: 800, category: 'Merch', icon: 'shirt', desc: '100% cotton official university t-shirt of your choice.' },
+      { id: 'rew-6', title: 'University Hoodie / Sweatshirt', cost: 1200, category: 'Merch', icon: 'package', desc: 'Heavyweight cozy college hoodie sent directly to your home.' }
+    ];
+
+    let scholarshipsData = JSON.parse(localStorage.getItem('nextstep_scholarships')) || [
+      { id: 'sch-1', title: 'Future STEM Leaders Award', provider: 'National Science Tech Foundation', amount: 10000, deadline: '2026-11-15', minGpa: 3.2, major: 'STEM Fields', desc: 'Annual grant for high school seniors and undergrads pursuing computer science or engineering.' },
+      { id: 'sch-2', title: 'First-Gen Trailblazer Grant', provider: 'Opportunity Forward Fund', amount: 5000, deadline: '2026-12-01', minGpa: 2.7, major: 'Any Major', desc: 'Created for first-generation college applicants demonstrating strong leadership.' },
+      { id: 'sch-3', title: 'New York TAP Enhancement Incentive', provider: 'NYS HESC Program', amount: 4000, deadline: '2027-01-30', minGpa: 2.5, major: 'Any Major', desc: 'State-level grant for qualified New York state residents staying in-state.' }
+    ];
+
+    const collegesData = [
+      { id: 'col-1', name: 'State University - Main Campus', type: 'Public', location: 'New York, NY', minGpa: 2.8, annualTuition: 10500, acceptRate: '68%', satRange: '1050-1250', image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=600', majors: ['Computer Science', 'Business', 'Nursing'], desc: 'Top-tier public research university with excellent STEM programs.' },
+      { id: 'col-2', name: 'Metropolitan Tech Institute', type: 'Public', location: 'Buffalo, NY', minGpa: 3.2, annualTuition: 8900, acceptRate: '54%', satRange: '1180-1380', image: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=600', majors: ['Engineering', 'Data Science'], desc: 'Premier urban technology-focused university with co-op placement.' },
+      { id: 'col-3', name: 'Empire Liberal Arts College', type: 'Private', location: 'Saratoga Springs, NY', minGpa: 3.5, annualTuition: 38000, acceptRate: '35%', satRange: '1280-1450', image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=600', majors: ['Biology', 'Political Science'], desc: 'Prestigious private liberal arts college offering 100% need-met aid.' }
+    ];
+
+    const tutorsData = [
+      { id: 'tut-1', name: 'David Kim', school: 'Cornell University', testScore: 'ACT: 36 (Perfect Math/Science)', rate: 'Free / Volunteer', bio: 'Scored a 36 on the ACT. Specializes in timing strategy for Science and advanced Math shortcuts.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', specialties: ['ACT Math & Science', 'SAT Math'] },
+      { id: 'tut-2', name: 'Maya Patel', school: 'Columbia University', testScore: 'SAT: 1570 (790 Reading/Writing)', rate: 'Free / Volunteer', bio: 'Raised my SAT score from 1310 to 1570. Expert in grammar rules and reading elimination techniques.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200', specialties: ['SAT Reading & Writing', 'ACT English'] },
+      { id: 'tut-3', name: 'Ethan Zhang', school: 'NYU Stern Alumni', testScore: 'ACT: 35 / SAT: 1540', rate: 'Volunteer / Mentorship', bio: 'Helped 15+ students score 32+ on ACT. Focuses on error analysis and pacing logs.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', specialties: ['Overall Pacing', 'Test Anxiety'] }
+    ];
+
+    const mentorsData = [
+      { id: 'men-1', name: 'Sarah Chen', school: 'Columbia University', major: 'Computer Science', status: 'available', bio: 'First-gen student who navigated FAFSA & full-ride scholarships.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' },
+      { id: 'men-2', name: 'Marcus Vance', school: 'NYU Stern', major: 'Finance & Econ', status: 'busy', bio: 'Specialized in financial planning and scholarship essays.', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200' }
+    ];
+
+    const internshipsData = [
+      { id: 'int-1', title: 'Summer Youth Tech Fellowship', org: 'Empire Tech Alliance', target: 'High School', pay: 'Paid ($2,000)', desc: '8-week software development program pairing students with mentors.' },
+      { id: 'int-2', title: 'Healthcare & Life Sciences Internship', org: 'Metropolitan Health', target: 'High School', pay: 'Paid ($18/hr)', desc: 'Shadowing in biomedical research labs for aspiring pre-med students.' },
+      { id: 'int-3', title: 'Data Analytics Undergraduate Co-Op', org: 'FinTech Solutions', target: 'College', pay: 'Paid ($25/hr)', desc: 'Full summer position for undergrads studying computer science or math.' }
+    ];
+
+    window.onload = function() {
+      if (currentUser) {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-dashboard').classList.remove('hidden');
+        updateUserHeader();
+        initDashboard();
+      }
+    };
+
+    function setAuthMode(mode) {
+      document.getElementById('btn-mode-login').className = "py-2 font-medium rounded-lg transition-all " + (mode==='login'?"bg-sky-500 text-white shadow-md":"text-slate-400 hover:text-slate-200");
+      document.getElementById('btn-mode-signup').className = "py-2 font-medium rounded-lg transition-all " + (mode==='signup'?"bg-sky-500 text-white shadow-md":"text-slate-400 hover:text-slate-200");
+      document.getElementById('btn-mode-mentor').className = "py-2 font-medium rounded-lg transition-all " + (mode==='mentor'?"bg-purple-500 text-white font-bold shadow-md":"text-slate-400 hover:text-slate-200");
+
+      if (mode === 'mentor') {
+        document.getElementById('student-form').classList.add('hidden');
+        document.getElementById('mentor-form-container').classList.remove('hidden');
+      } else {
+        document.getElementById('student-form').classList.remove('hidden');
+        document.getElementById('mentor-form-container').classList.add('hidden');
+        document.getElementById('field-name').classList.toggle('hidden', mode === 'login');
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      currentUser = {
+        name: document.getElementById('input-name').value || 'Alex Rivera',
+        gpa: parseFloat(document.getElementById('input-gpa').value) || 3.4,
+        budget: parseInt(document.getElementById('input-budget').value) || 18000
+      };
+
+      localStorage.setItem('nextstep_user', JSON.stringify(currentUser));
+      updateUserHeader();
+
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-dashboard').classList.remove('hidden');
+      initDashboard();
+    }
+
+    function updateUserHeader() {
+      document.getElementById('user-display-name').textContent = currentUser.name;
+      document.getElementById('user-display-gpa').textContent = currentUser.gpa;
+      document.getElementById('user-display-budget').textContent = '$' + currentUser.budget.toLocaleString() + '/yr';
+      document.getElementById('user-display-points').textContent = userPoints;
+      document.getElementById('rewards-balance-text').textContent = userPoints;
+    }
+
+    function addPoints(pts) {
+      userPoints += pts;
+      localStorage.setItem('nextstep_points', userPoints);
+      updateUserHeader();
+      renderRewardsShop();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('nextstep_user');
+      currentUser = null;
+      document.getElementById('app-dashboard').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+    }
+
+    function openProfileModal() {
+      document.getElementById('edit-profile-name').value = currentUser.name;
+      document.getElementById('edit-profile-gpa').value = currentUser.gpa;
+      document.getElementById('edit-profile-budget').value = currentUser.budget;
+      document.getElementById('profile-modal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    function saveProfileChanges(e) {
+      e.preventDefault();
+      currentUser.name = document.getElementById('edit-profile-name').value.trim();
+      currentUser.gpa = parseFloat(document.getElementById('edit-profile-gpa').value);
+      currentUser.budget = parseInt(document.getElementById('edit-profile-budget').value);
+
+      localStorage.setItem('nextstep_user', JSON.stringify(currentUser));
+      updateUserHeader();
+      closeProfileModal();
+      renderColleges();
+    }
+
+    function switchTab(tabName) {
+      ['fafsa', 'rewards', 'scholarships', 'testprep', 'matcher', 'mentors', 'internships', 'advisor'].forEach(t => {
+        document.getElementById('tab-' + t).classList.add('hidden');
+        document.getElementById('nav-' + t).className = "flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap";
+      });
+
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('nav-' + tabName).className = "flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 whitespace-nowrap";
+      
+      lucide.createIcons();
+    }
+
+    function initDashboard() {
+      renderChecklist();
+      renderRewardsShop();
+      renderScholarships();
+      renderTutors();
+      renderColleges();
+      renderMentors();
+      renderInternships();
+      initAdvisorChat();
+      lucide.createIcons();
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = '';
+      let doneCount = 0;
+
+      checklistData.forEach(item => {
+        if(item.done) doneCount++;
+        const div = document.createElement('div');
+        div.className = `flex items-center gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${item.done ? 'bg-sage-100 border-sage-300 opacity-80' : 'bg-white border-slate-200'}`;
+        div.onclick = () => { 
+          item.done = !item.done;
+          if (item.done) addPoints(100);
+          localStorage.setItem('nextstep_checklist', JSON.stringify(checklistData));
+          renderChecklist(); 
+        };
+        div.innerHTML = `
+          <div class="w-5 h-5 rounded-md flex items-center justify-center ${item.done ? 'bg-sage-600 text-white' : 'border border-slate-300'}">
+            ${item.done ? '<i data-lucide="check" class="w-3.5 h-3.5"></i>' : ''}
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded ${item.tag==='FAFSA'?'bg-sky-100 text-sky-800':'bg-purple-100 text-purple-800'}">${item.tag}</span>
+          <span class="text-sm font-medium ${item.done?'line-through text-slate-500':'text-slate-800'}">${item.title}</span>
+          <span class="ml-auto text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">+100 PTS</span>
+        `;
+        container.appendChild(div);
+      });
+
+      const pct = Math.round((doneCount / checklistData.length) * 100);
+      document.getElementById('checklist-progress-text').textContent = `${doneCount} of ${checklistData.length} Complete (${pct}%)`;
+      document.getElementById('checklist-progress-bar').style.width = pct + '%';
+      lucide.createIcons();
+    }
+
+    function resetChecklist() {
+      checklistData.forEach(i => i.done = false);
+      localStorage.setItem('nextstep_checklist', JSON.stringify(checklistData));
+      renderChecklist();
+    }
+
+    function renderRewardsShop() {
+      const grid = document.getElementById('rewards-grid');
+      grid.innerHTML = '';
+
+      rewardsData.forEach(item => {
+        const canAfford = userPoints >= item.cost;
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <div class="p-2.5 bg-amber-100 text-amber-700 rounded-xl">
+                <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+              </div>
+              <span class="px-2.5 py-1 bg-amber-50 text-amber-800 font-extrabold text-xs rounded-full border border-amber-200">
+                ${item.cost} PTS
+              </span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-base mb-1">${item.title}</h4>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">${item.desc}</p>
+          </div>
+          <button onclick="openRedeemModal('${item.id}')" ${!canAfford ? 'disabled' : ''} class="w-full py-2.5 ${canAfford ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white' : 'bg-slate-100 text-slate-400 cursor-not-allowed'} text-xs font-bold rounded-xl shadow transition-all">
+            ${canAfford ? 'Redeem Reward' : 'Need ' + (item.cost - userPoints) + ' More PTS'}
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function openRedeemModal(itemId) {
+      selectedRedeemItem = rewardsData.find(r => r.id === itemId);
+      if (!selectedRedeemItem) return;
+
+      document.getElementById('modal-item-title').textContent = "Redeem " + selectedRedeemItem.title;
+      document.getElementById('modal-item-cost').textContent = "Cost: " + selectedRedeemItem.cost + " Points";
+      document.getElementById('redeem-form-content').classList.remove('hidden');
+      document.getElementById('redeem-success-content').classList.add('hidden');
+      document.getElementById('redeem-modal').classList.remove('hidden');
+    }
+
+    function closeRedeemModal() {
+      document.getElementById('redeem-modal').classList.add('hidden');
+    }
+
+    function submitRedeemModal(e) {
+      e.preventDefault();
+      if (!selectedRedeemItem || userPoints < selectedRedeemItem.cost) return;
+
+      userPoints -= selectedRedeemItem.cost;
+      localStorage.setItem('nextstep_points', userPoints);
+      updateUserHeader();
+
+      document.getElementById('redeem-form-content').classList.add('hidden');
+      document.getElementById('redeem-success-content').classList.remove('hidden');
+      renderRewardsShop();
+    }
+
+    function renderScholarships() {
+      const grid = document.getElementById('scholarships-grid');
+      grid.innerHTML = '';
+      scholarshipsData.forEach(sch => {
+        const isSaved = savedScholarships.includes(sch.id);
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <span class="text-xs font-semibold text-sky-600 uppercase">${sch.provider}</span>
+                <h3 class="text-lg font-bold text-slate-900">${sch.title}</h3>
+              </div>
+              <button onclick="toggleSave('sch', '${sch.id}')" class="p-2 rounded-full ${isSaved?'bg-purple-50 text-purple-600':'bg-slate-100 text-slate-400'}">
+                <i data-lucide="bookmark" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 my-3 p-3 bg-slate-50 rounded-xl text-xs">
+              <div><span class="text-slate-400 block">Amount:</span><span class="font-bold text-sage-700">$${sch.amount.toLocaleString()}/yr</span></div>
+              <div><span class="text-slate-400 block">Deadline:</span><span class="font-semibold text-slate-700">${sch.deadline}</span></div>
+            </div>
+            <p class="text-xs text-slate-600 mb-4">${sch.desc}</p>
+          </div>
+          <button onclick="toggleSave('sch', '${sch.id}')" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg">${isSaved?'Saved':'Save Scholarship'}</button>
+        `;
+        grid.appendChild(card);
+      });
+      document.getElementById('saved-sch-count').textContent = savedScholarships.length;
+      lucide.createIcons();
+    }
+
+    function renderTutors() {
+      const grid = document.getElementById('tutors-grid');
+      grid.innerHTML = '';
+      tutorsData.forEach(tut => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <img src="${tut.avatar}" class="w-12 h-12 rounded-full object-cover">
+                <div>
+                  <h3 class="font-bold text-slate-900">${tut.name}</h3>
+                  <p class="text-xs text-emerald-600 font-semibold">${tut.school}</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 text-[11px] font-bold bg-emerald-100 text-emerald-800 rounded-lg">
+                ${tut.testScore}
+              </span>
+            </div>
+            <p class="text-xs text-slate-600 mb-3">"${tut.bio}"</p>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              ${tut.specialties.map(s => `<span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-medium">${s}</span>`).join('')}
+            </div>
+          </div>
+          <button onclick="openTutorModal('${tut.name}', '${tut.school}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl">
+            Request Tutoring with ${tut.name.split(' ')[0]} (+100 PTS)
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function openTutorModal(name, school) {
+      document.getElementById('modal-tutor-title').textContent = "Request Tutoring with " + name;
+      document.getElementById('modal-tutor-sub').textContent = school;
+      document.getElementById('tutor-form-content').classList.remove('hidden');
+      document.getElementById('tutor-success-content').classList.add('hidden');
+      document.getElementById('tutor-modal').classList.remove('hidden');
+    }
+
+    function closeTutorModal() {
+      document.getElementById('tutor-modal').classList.add('hidden');
+    }
+
+    function submitTutorModal(e) {
+      e.preventDefault();
+      addPoints(100);
+      document.getElementById('tutor-form-content').classList.add('hidden');
+      document.getElementById('tutor-success-content').classList.remove('hidden');
+      setTimeout(closeTutorModal, 2000);
+    }
+
+    function openAddScholarshipModal() {
+      document.getElementById('add-sch-modal').classList.remove('hidden');
+    }
+
+    function closeAddScholarshipModal() {
+      document.getElementById('add-sch-modal').classList.add('hidden');
+    }
+
+    function saveCustomScholarship(e) {
+      e.preventDefault();
+      const newSch = {
+        id: 'sch-' + Date.now(),
+        title: document.getElementById('new-sch-title').value.trim(),
+        provider: document.getElementById('new-sch-provider').value.trim(),
+        amount: parseInt(document.getElementById('new-sch-amount').value),
+        deadline: document.getElementById('new-sch-deadline').value,
+        desc: document.getElementById('new-sch-desc').value.trim()
+      };
+
+      scholarshipsData.unshift(newSch);
+      addPoints(50);
+      localStorage.setItem('nextstep_scholarships', JSON.stringify(scholarshipsData));
+      renderScholarships();
+      closeAddScholarshipModal();
+    }
+
+    function renderColleges() {
+      const grid = document.getElementById('colleges-grid');
+      const targetGpa = parseFloat(document.getElementById('filter-gpa').value) || 0;
+      const targetBudget = parseInt(document.getElementById('filter-budget').value) || 999999;
+      const targetType = document.getElementById('filter-type').value;
+      const searchKeyword = document.getElementById('filter-search').value.toLowerCase();
+
+      grid.innerHTML = '';
+      
+      const filtered = collegesData.filter(col => {
+        const matchesGpa = col.minGpa <= targetGpa;
+        const matchesBudget = col.annualTuition <= targetBudget;
+        const matchesType = targetType === 'All' || col.type === targetType;
+        const matchesSearch = col.name.toLowerCase().includes(searchKeyword) || col.location.toLowerCase().includes(searchKeyword);
+        return matchesGpa && matchesBudget && matchesType && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<p class="col-span-3 text-center text-xs text-slate-500 py-8">No colleges found matching your search filters.</p>`;
+        return;
+      }
+
+      filtered.forEach(col => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <img src="${col.image}" class="h-40 w-full object-cover">
+            <div class="p-5">
+              <h3 class="font-bold text-slate-900 text-base">${col.name}</h3>
+              <p class="text-xs text-slate-500 mb-3">${col.location}</p>
+              <div class="grid grid-cols-2 gap-2 my-2 p-3 bg-slate-50 rounded-xl text-xs">
+                <div><span class="text-slate-400 block">Tuition:</span><span class="font-bold text-slate-800">$${col.annualTuition.toLocaleString()}/yr</span></div>
+                <div><span class="text-slate-400 block">Min GPA:</span><span class="font-bold text-slate-800">${col.minGpa}</span></div>
+              </div>
+              <p class="text-xs text-slate-600 mt-2">${col.desc}</p>
+            </div>
+          </div>
+          <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-semibold text-sage-700">✓ Profile Match</span>
+            <button class="text-sky-600 font-semibold">View Details</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function renderMentors() {
+      const grid = document.getElementById('mentors-grid');
+      grid.innerHTML = '';
+      mentorsData.forEach(men => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <img src="${men.avatar}" class="w-12 h-12 rounded-full object-cover">
+                <div>
+                  <h3 class="font-bold text-slate-900">${men.name}</h3>
+                  <p class="text-xs text-purple-600 font-semibold">${men.school}</p>
+                </div>
+              </div>
+            </div>
+            <p class="text-xs text-slate-600 mb-4">"${men.bio}"</p>
+          </div>
+          <button class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-xl">
+            Connect with ${men.name.split(' ')[0]}
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function setInternshipFilter(type) {
+      currentFilterAudience = type;
+      ['All', 'HS', 'College'].forEach(t => {
+        const btn = document.getElementById('int-btn-' + t);
+        if (t === type || (t === 'HS' && type === 'High School')) {
+          btn.className = "px-3 py-1.5 rounded-lg bg-white shadow font-bold text-slate-900";
+        } else {
+          btn.className = "px-3 py-1.5 rounded-lg text-slate-600";
+        }
+      });
+      renderInternships();
+    }
+
+    function renderInternships() {
+      const grid = document.getElementById('internships-grid');
+      grid.innerHTML = '';
+
+      const filtered = internshipsData.filter(i => {
+        if (currentFilterAudience === 'All') return true;
+        return i.target === currentFilterAudience;
+      });
+
+      filtered.forEach(int => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <span class="text-xs font-bold text-purple-600 uppercase">${int.org}</span>
+            <h3 class="text-lg font-bold text-slate-900 mt-0.5">${int.title}</h3>
+            <div class="grid grid-cols-2 gap-2 my-3 p-3 bg-slate-50 rounded-xl text-xs">
+              <div><span class="text-slate-400 block">Target:</span><span class="font-semibold text-slate-800">${int.target}</span></div>
+              <div><span class="text-slate-400 block">Compensation:</span><span class="font-bold text-sage-700">${int.pay}</span></div>
+            </div>
+            <p class="text-xs text-slate-600 mb-4">${int.desc}</p>
+          </div>
+          <button class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg">Apply Opportunity</button>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function toggleSave(type, id) {
+      if(type === 'sch') {
+        const previouslySaved = savedScholarships.includes(id);
+        savedScholarships = previouslySaved ? savedScholarships.filter(x=>x!==id) : [...savedScholarships, id];
+        if (!previouslySaved) addPoints(50);
+        localStorage.setItem('nextstep_saved_sch', JSON.stringify(savedScholarships));
+        renderScholarships();
+      }
+    }
+
+    function initAdvisorChat() {
+      const box = document.getElementById('chat-messages');
+      box.innerHTML = `
+        <div class="flex flex-col items-start">
+          <div class="bg-white border border-slate-200 text-slate-800 rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-sm">
+            👋 Welcome to Next Step! I'm your AI College Advisor. Ask me anything about ACT/SAT scores, FAFSA, TAP grants, scholarships, or earning gift shop rewards!
+          </div>
+        </div>
+      `;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if(!text) return;
+
+      const box = document.getElementById('chat-messages');
+      box.innerHTML += `
+        <div class="flex flex-col items-end">
+          <div class="bg-sky-500 text-white rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-sm max-w-[80%]">
+            ${text}
+          </div>
+        </div>
+      `;
+      input.value = '';
+      box.scrollTop = box.scrollHeight;
+
+      setTimeout(() => {
+        let reply = "That's a great question! Be sure to check off your FAFSA and test prep steps to earn points for free merch and gift cards in the Gift Shop tab!";
+        if(text.toLowerCase().includes('points') || text.toLowerCase().includes('merch') || text.toLowerCase().includes('shop') || text.toLowerCase().includes('gift')) {
+          reply = "You earn +100 Points for every FAFSA checklist step completed or tutor requested, and +50 Points for saving scholarships! Head over to the Gift Shop & Merch tab to redeem your points for official college hoodies, t-shirts, or $5 gift cards.";
+        } else if(text.toLowerCase().includes('act') || text.toLowerCase().includes('sat')) {
+          reply = "To hit 30–36 on the ACT or 1360–1600 on the SAT, focus heavily on timing logs and error tracking. You can request a 1-on-1 session with a high-scoring college tutor in the Test Prep tab!";
+        }
+
+        box.innerHTML += `
+          <div class="flex flex-col items-start">
+            <div class="bg-white border border-slate-200 text-slate-800 rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-sm max-w-[80%]">
+              ${reply}
+            </div>
+          </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+      }, 600);
+    }
+
+    function sendQuickPrompt(prompt) {
+      document.getElementById('chat-input').value = prompt;
+      sendChatMessage();
+    }
+  </script>
+</body>
+</html>
