@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Next Step - Future Me, Future You, Future Now</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Custom Sage Green Hex Utilities */
+    .bg-sage-100 { background-color: #e8f0ec; }
+    .bg-sage-600 { background-color: #6b8e7e; }
+    .bg-sage-700 { background-color: #557365; }
+    .text-sage-700 { color: #557365; }
+    .text-sage-800 { color: #3d5248; }
+    .border-sage-300 { border-color: #b8d1c4; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- ==================== AUTH / LOGIN SCREEN ==================== -->
+  <div id="auth-screen" class="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-x-hidden">
+    <!-- Light Blue, Sage Green & Lavender Ambient Blurs -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sky-400/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-1/4 left-1/3 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="w-full max-w-xl bg-slate-800/90 backdrop-blur-md border border-slate-700/80 rounded-2xl shadow-2xl p-6 sm:p-8 z-10 my-8">
+      
+      <!-- App Header & Slogan -->
+      <div class="flex flex-col items-center mb-6 text-center">
+        <div class="p-3 bg-gradient-to-tr from-sky-400 via-purple-400 to-emerald-400 rounded-2xl shadow-lg mb-3">
+          <i data-lucide="graduation-cap" class="w-10 h-10 text-white"></i>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-sky-300 via-purple-200 to-emerald-300 bg-clip-text text-transparent">
+          Next Step
+        </h1>
+        
+        <div class="inline-block mt-2 px-3.5 py-1 bg-gradient-to-r from-sky-500/20 via-purple-500/20 to-emerald-500/20 border border-sky-300/30 rounded-full">
+          <p class="text-xs sm:text-sm font-extrabold tracking-wider uppercase bg-gradient-to-r from-sky-300 via-purple-200 to-emerald-200 bg-clip-text text-transparent">
+            Future Me, Future You, Future Now
+          </p>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-400 mt-2">
+          FAFSA, TAP, Scholarships, Peer Mentors & Internships
+        </p>
+      </div>
+
+      <!-- Auth Mode Selector -->
+      <div class="grid grid-cols-3 bg-slate-900/60 p-1 rounded-xl mb-6 border border-slate-700/50 text-xs sm:text-sm">
+        <button id="btn-mode-login" onclick="setAuthMode('login')" class="py-2 font-medium rounded-lg transition-all bg-sky-500 text-white shadow-md">
+          Sign In
+        </button>
+        <button id="btn-mode-signup" onclick="setAuthMode('signup')" class="py-2 font-medium rounded-lg transition-all text-slate-400 hover:text-slate-200">
+          Student Signup
+        </button>
+        <button id="btn-mode-mentor" onclick="setAuthMode('mentor')" class="py-2 font-medium rounded-lg transition-all text-slate-400 hover:text-slate-200">
+          Apply as Mentor
+        </button>
+      </div>
+
+      <!-- Student Login / Signup Form -->
+      <form id="student-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div id="field-name" class="hidden">
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
+          <input type="text" id="input-name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="e.g. Alex Rivera" value="Alex Rivera">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Email Address</label>
+          <input type="email" required id="input-email" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="student@example.com" value="alex.rivera@example.com">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Password</label>
+          <input type="password" required id="input-password" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="••••••••" value="password123">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Unweighted GPA</label>
+            <input type="number" step="0.01" min="0" max="4.0" required id="input-gpa" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="3.4" value="3.4">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Max Budget / Yr ($)</label>
+            <input type="number" step="500" required id="input-budget" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="18000" value="18000">
+          </div>
+        </div>
+
+        <button type="submit" id="btn-auth-submit" class="w-full mt-2 py-3 bg-gradient-to-r from-sky-400 via-purple-400 to-emerald-400 hover:from-sky-300 hover:to-emerald-300 text-slate-950 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+          <span>Sign In to Next Step</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <!-- Mentor Application Form -->
+      <div id="mentor-form-container" class="hidden space-y-4">
+        <div class="bg-purple-950/70 border border-purple-700/60 rounded-xl p-4 text-xs space-y-2">
+          <div class="flex items-center gap-1.5 font-bold text-purple-300">
+            <i data-lucide="award" class="w-4 h-4 text-purple-400"></i>
+            Why Become a Mentor on Next Step?
+          </div>
+          <ul class="grid grid-cols-2 gap-2 text-slate-300">
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Signed Volunteer Hours</li>
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> College Course Credit</li>
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Internship Credit</li>
+            <li class="flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i> Leadership Experience</li>
+          </ul>
+        </div>
+
+        <form onsubmit="handleMentorSubmit(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
+            <input type="text" required placeholder="e.g. Jordan Smith" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">University / College</label>
+              <input type="text" required placeholder="e.g. Columbia Univ" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Major</label>
+              <input type="text" required placeholder="e.g. Biology" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-purple-400">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div class="bg-slate-900/80 border border-dashed border-slate-700 rounded-xl p-3 text-center">
+              <i data-lucide="file-text" class="w-5 h-5 text-purple-400 mx-auto mb-1"></i>
+              <span class="block font-semibold text-slate-200">Upload Resume</span>
+              <span class="text-[10px] text-slate-400 block mb-2">PDF, DOCX (Max 5MB)</span>
+              <input type="file" required class="hidden" id="resume-file" onchange="updateFileName(this, 'resume-label')">
+              <label htmlFor="resume-file" id="resume-label" class="inline-block px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-slate-200 cursor-pointer font-medium">Choose File</label>
+            </div>
+
+            <div class="bg-slate-900/80 border border-dashed border-slate-700 rounded-xl p-3 text-center">
+              <i data-lucide="upload" class="w-5 h-5 text-purple-400 mx-auto mb-1"></i>
+              <span class="block font-semibold text-slate-200">Proof of School</span>
+              <span class="text-[10px] text-slate-400 block mb-2">Student ID / Acceptance</span>
+              <input type="file" required class="hidden" id="proof-file" onchange="updateFileName(this, 'proof-label')">
+              <label htmlFor="proof-file" id="proof-label" class="inline-block px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg text-slate-200 cursor-pointer font-medium">Choose File</label>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3 mt-3 bg-gradient-to-r from-purple-500 to-sky-500 hover:from-purple-400 hover:to-sky-400 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+            Submit Mentor Application
+          </button>
+        </form>
+      </div>
+
+      <!-- Mentor Success Message -->
+      <div id="mentor-success" class="hidden text-center py-6 space-y-4">
+        <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/40">
+          <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Application Received!</h3>
+        <p class="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed">
+          Thank you for applying to empower the next generation! Our team will verify your school enrollment proof and resume within 24–48 hours.
+        </p>
+        <button onclick="setAuthMode('login')" class="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-xs font-semibold rounded-lg text-white">
+          Back to Student Login
+        </button>
+      </div>
+
+      <!-- Donation Button on Auth Footer -->
+      <div class="mt-4 pt-4 border-t border-slate-700/60 text-center flex items-center justify-center gap-3">
+        <button onclick="openDonateModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-300 text-xs font-semibold rounded-lg transition-all">
+          <i data-lucide="heart" class="w-3.5 h-3.5 fill-current text-purple-400"></i> Support Next Step Initiative
+        </button>
+      </div>
+
+      <p class="text-center text-xs text-slate-500 mt-4">
+        🔒 Safe & verified student environment. All mentors background-checked.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN APP DASHBOARD ==================== -->
+  <div id="app-dashboard" class="hidden flex-1 flex flex-col">
+    <!-- Navbar Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md border-b border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo & Slogan -->
+          <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('fafsa')">
+            <div class="p-2 bg-gradient-to-br from-sky-400 via-purple-400 to-emerald-400 rounded-xl shadow">
+              <i data-lucide="graduation-cap" class="w-6 h-6 text-slate-950"></i>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-sky-100 to-purple-200 bg-clip-text text-transparent">Next Step</span>
+                <span class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-sky-950/80 text-sky-300 rounded-full border border-sky-700/50">NY & Federal Aid</span>
+              </div>
+              <span class="text-[10px] font-bold tracking-wider uppercase text-sky-300/90 -mt-0.5">Future Me, Future You, Future Now</span>
+            </div>
+          </div>
+
+          <!-- User Info, Donate & Logout -->
+          <div class="flex items-center gap-3">
+            <div class="hidden md:flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs">
+              <i data-lucide="user" class="w-3.5 h-3.5 text-sky-400"></i>
+              <span id="user-display-name" class="font-medium text-slate-200">Alex Rivera</span>
+              <span class="text-slate-500">|</span>
+              <span class="text-slate-400">GPA: <strong id="user-display-gpa" class="text-sky-300">3.4</strong></span>
+              <span class="text-slate-500">|</span>
+              <span class="text-slate-400">Budget: <strong id="user-display-budget" class="text-emerald-300">$18,000/yr</strong></span>
+            </div>
+
+            <!-- DONATE BUTTON IN NAVBAR -->
+            <button onclick="openDonateModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-purple-500 to-sky-500 hover:from-purple-600 hover:to-sky-600 text-white rounded-lg transition-all shadow-sm flex items-center gap-1.5 text-xs font-semibold">
+              <i data-lucide="heart" class="w-3.5 h-3.5 fill-current"></i>
+              <span>Donate</span>
+            </button>
+
+            <button onclick="handleLogout()" class="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors flex items-center gap-1.5 text-xs font-medium">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="bg-slate-900/95 border-t border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-4 overflow-x-auto scrollbar-none">
+          <button id="nav-fafsa" onclick="switchTab('fafsa')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 whitespace-nowrap">
+            <i data-lucide="file-check" class="w-4 h-4"></i> FAFSA & TAP Aid
+          </button>
+          <button id="nav-scholarships" onclick="switchTab('scholarships')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="award" class="w-4 h-4"></i> Scholarships (<span id="saved-sch-count">2</span>)
+          </button>
+          <button id="nav-matcher" onclick="switchTab('matcher')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="building" class="w-4 h-4"></i> College Matcher
+          </button>
+          <button id="nav-mentors" onclick="switchTab('mentors')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="users" class="w-4 h-4"></i> Connect Mentors
+          </button>
+          <button id="nav-internships" onclick="switchTab('internships')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="briefcase" class="w-4 h-4"></i> Internships
+          </button>
+          <button id="nav-advisor" onclick="switchTab('advisor')" class="flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap">
+            <i data-lucide="sparkles" class="w-4 h-4 text-purple-300 animate-pulse"></i> AI Advisor Chat
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Tab Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      
+      <!-- TAB 1: FAFSA & TAP AID -->
+      <section id="tab-fafsa" class="space-y-6">
+        <div class="bg-gradient-to-r from-sky-600 via-purple-700 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+          <div class="relative z-10 max-w-2xl">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-sky-400/30 to-purple-400/30 border border-sky-300/40 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold text-sky-100 tracking-wide uppercase mb-3">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-200"></i> Future Me, Future You, Future Now
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">FAFSA & New York TAP Readiness Portal</h2>
+            <p class="mt-2 text-sm sm:text-base text-sky-100 leading-relaxed">
+              Completing your FAFSA and TAP applications is the #1 step to securing non-repayable grants, work-study opportunities, and low-interest student loans.
+            </p>
+            <div class="mt-6 bg-slate-800/80 backdrop-blur border border-white/10 p-4 rounded-xl">
+              <div class="flex justify-between items-center text-xs font-semibold text-slate-200 mb-2">
+                <span>Application Checklist Progress</span>
+                <span id="checklist-progress-text" class="text-sky-300">2 of 6 Complete (33%)</span>
+              </div>
+              <div class="w-full bg-slate-700 rounded-full h-2.5 overflow-hidden">
+                <div id="checklist-progress-bar" class="bg-gradient-to-r from-sky-400 via-purple-300 to-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width: 33%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORKING TUTORIAL VIDEOS SECTION -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="p-2 bg-sky-100 text-sky-600 rounded-xl">
+                <i data-lucide="video" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-slate-900">Official Step-by-Step Video Guides</h3>
+                <p class="text-xs text-slate-500">Watch verified walkthroughs on completing your FAFSA and New York TAP financial aid forms.</p>
+              </div>
+            </div>
+            <span class="hidden sm:inline-block px-3 py-1 bg-sky-50 text-sky-700 text-xs font-semibold rounded-full border border-sky-200">
+              Verified Playback
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <!-- Video Card 1: FAFSA -->
+            <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 hover:shadow-md transition-shadow flex flex-col justify-between">
+              <div>
+                <!-- Video Thumbnail Player Screen -->
+                <div class="relative bg-slate-900 h-48 w-full flex items-center justify-center overflow-hidden group cursor-pointer" onclick="playVideo('fafsa')">
+                  <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=600" alt="FAFSA Walkthrough" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300">
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                  
+                  <!-- Play Button Badge -->
+                  <div class="absolute w-14 h-14 bg-sky-500 text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+                  </div>
+                  
+                  <span class="absolute bottom-3 left-3 px-2.5 py-1 bg-slate-900/80 backdrop-blur text-white text-[11px] font-semibold rounded-md flex items-center gap-1">
+                    <i data-lucide="clock" class="w-3 h-3 text-slate-300"></i> Federal Student Aid
+                  </span>
+                  <span class="absolute bottom-3 right-3 px-2.5 py-1 bg-sky-500 text-white text-[11px] font-bold rounded-md uppercase">
+                    FAFSA Guide
+                  </span>
+                </div>
+
+                <div class="p-5">
+                  <h4 class="font-bold text-slate-900 text-base">How to Fill Out the FAFSA® Form</h4>
+                  <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                    Official Federal Student Aid overview on creating your Account (FSA ID), adding contributors, importing IRS tax information, and listing schools.
+                  </p>
+                  
+                  <!-- Key Chapters -->
+                  <div class="mt-4 pt-3 border-t border-slate-200/80 space-y-1 text-xs">
+                    <span class="font-semibold text-slate-500 uppercase tracking-wider text-[10px] block">Key Steps Covered:</span>
+                    <ul class="space-y-1 text-slate-700">
+                      <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-sky-600"></i> Step 1: Creating student & parent StudentAid.gov accounts</li>
+                      <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-sky-600"></i> Step 2: Providing financial & IRS direct data exchange</li>
+                      <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-sky-600"></i> Step 3: Selecting college codes & signing electronically</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 bg-white border-t border-slate-100 flex items-center justify-between">
+                <a href="https://studentaid.gov/apply-for-aid/fafsa/filling-out" target="_blank" class="text-xs text-sky-600 font-semibold hover:underline flex items-center gap-1">
+                  Official Written Guide <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+                <button onclick="playVideo('fafsa')" class="px-3.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg shadow flex items-center gap-1.5">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> Watch Tutorial
+                </button>
+              </div>
+            </div>
+
+            <!-- Video Card 2: TAP -->
+            <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 hover:shadow-md transition-shadow flex flex-col justify-between">
+              <div>
+                <!-- Video Thumbnail Player Screen -->
+                <div class="relative bg-slate-900 h-48 w-full flex items-center justify-center overflow-hidden group cursor-pointer" onclick="playVideo('tap')">
+                  <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=600" alt="TAP Walkthrough" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-300">
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                  
+                  <!-- Play Button Badge -->
+                  <div class="absolute w-14 h-14 bg-purple-500 text-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+                  </div>
+
+                  <span class="absolute bottom-3 left-3 px-2.5 py-1 bg-slate-900/80 backdrop-blur text-white text-[11px] font-semibold rounded-md flex items-center gap-1">
+                    <i data-lucide="clock" class="w-3 h-3 text-slate-300"></i> NYS HESC Guide
+                  </span>
+                  <span class="absolute bottom-3 right-3 px-2.5 py-1 bg-purple-600 text-white text-[11px] font-bold rounded-md uppercase">
+                    NYS TAP Grant
+                  </span>
+                </div>
+
+                <div class="p-5">
+                  <h4 class="font-bold text-slate-900 text-base">How to Apply for New York TAP Grant</h4>
+                  <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                    Step-by-step guidance for New York State residents linking FAFSA to the NYS Higher Education Services Corporation (HESC) TAP application.
+                  </p>
+                  
+                  <!-- Key Chapters -->
+                  <div class="mt-4 pt-3 border-t border-slate-200/80 space-y-1 text-xs">
+                    <span class="font-semibold text-slate-500 uppercase tracking-wider text-[10px] block">Key Steps Covered:</span>
+                    <ul class="space-y-1 text-slate-700">
+                      <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-purple-600"></i> Step 1: Navigating to HESC TAP from FAFSA confirmation</li>
+                      <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-purple-600"></i> Step 2: Verifying New York State residency & tax info</li>
+                      <li class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-purple-600"></i> Step 3: Entering your NYS college TAP code</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 bg-white border-t border-slate-100 flex items-center justify-between">
+                <a href="https://www.hesc.ny.gov/pay-for-college/apply-for-financial-aid/nys-tap.html" target="_blank" class="text-xs text-purple-600 font-semibold hover:underline flex items-center gap-1">
+                  HESC Guidelines <i data-lucide="external-link" class="w-3 h-3"></i>
+                </a>
+                <button onclick="playVideo('tap')" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-lg shadow flex items-center gap-1.5">
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> Watch Tutorial
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW SECTION: ESSAY ADVICE & FINANCIAL AID TIPS -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 bg-purple-100 text-purple-600 rounded-xl">
+                <i data-lucide="book-open" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-slate-900">Essay Advice & Financial Aid Appeal Tips</h3>
+                <p class="text-xs text-slate-500">Expert strategies for writing financial hardship statements, appeal letters, and scholarship essays.</p>
+              </div>
+            </div>
+            <span class="hidden sm:inline-block px-3 py-1 bg-purple-50 text-purple-700 text-xs font-semibold rounded-full border border-purple-200">
+              Expert Writer Tips
+            </span>
+          </div>
+
+          <!-- Essay Tips Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Tip Card 1 -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
+              <div>
+                <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 font-bold flex items-center justify-center text-xs mb-2">1</div>
+                <h4 class="font-bold text-slate-900 text-sm">Be Honest & Specific About Need</h4>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                  Clearly describe any special financial circumstances (unreimbursed medical bills, job change, caring for family members) that tax forms alone do not show.
+                </p>
+              </div>
+              <span class="text-[11px] font-semibold text-sky-600">Tip: Focus on recent changes</span>
+            </div>
+
+            <!-- Tip Card 2 -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
+              <div>
+                <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-xs mb-2">2</div>
+                <h4 class="font-bold text-slate-900 text-sm">Quantify Impact With Numbers</h4>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                  Instead of stating general hardship, provide clear numbers (e.g., exact net income reduction or monthly essential costs) to help financial aid officers calculate your true need.
+                </p>
+              </div>
+              <span class="text-[11px] font-semibold text-purple-600">Tip: Attach documentation</span>
+            </div>
+
+            <!-- Tip Card 3 -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
+              <div>
+                <div class="w-8 h-8 rounded-lg bg-sage-100 text-sage-800 font-bold flex items-center justify-center text-xs mb-2">3</div>
+                <h4 class="font-bold text-slate-900 text-sm">Stay Positive & Goal-Oriented</h4>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                  Highlight your dedication to your educational goals, academic strengths, and how receiving additional aid will help you succeed at their institution.
+                </p>
+              </div>
+              <span class="text-[11px] font-semibold text-sage-700">Tip: Highlight resilience</span>
+            </div>
+          </div>
+
+          <!-- Financial Aid Appeal Letter Outline Guide -->
+          <div class="bg-gradient-to-r from-sky-50 via-purple-50 to-emerald-50 border border-sky-200/80 rounded-xl p-5 text-xs space-y-3">
+            <div class="flex items-center gap-2 font-bold text-slate-900 text-sm">
+              <i data-lucide="file-text" class="w-4 h-4 text-sky-600"></i>
+              Financial Aid Appeal Letter Structure
+            </div>
+            <p class="text-slate-600 leading-relaxed">
+              If your FAFSA or TAP financial aid offer falls short, you can write an official **Special Circumstances Appeal Letter** to your college's financial aid office. Follow this simple 4-paragraph template:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div class="bg-white/80 border border-slate-200 p-3 rounded-lg">
+                <strong class="text-sky-700 block mb-0.5">Paragraph 1: Gratitude & Commitment</strong>
+                <p class="text-slate-600">Thank the college for accepting you, express enthusiasm, and confirm it is your top choice.</p>
+              </div>
+              <div class="bg-white/80 border border-slate-200 p-3 rounded-lg">
+                <strong class="text-purple-700 block mb-0.5">Paragraph 2: Explanation of Hardship</strong>
+                <p class="text-slate-600">Detail specific financial changes since prior-prior tax year with dates and facts.</p>
+              </div>
+              <div class="bg-white/80 border border-slate-200 p-3 rounded-lg">
+                <strong class="text-purple-700 block mb-0.5">Paragraph 3: Documents Attached</strong>
+                <p class="text-slate-600">List supporting evidence (layoff notices, medical receipts, revised tax returns).</p>
+              </div>
+              <div class="bg-white/80 border border-slate-200 p-3 rounded-lg">
+                <strong class="text-sage-700 block mb-0.5">Paragraph 4: Respectful Request</strong>
+                <p class="text-slate-600">Respectfully request a re-evaluation of your aid package and offer to answer questions.</p>
+              </div>
+            </div>
+            <div class="pt-1 flex items-center justify-between">
+              <span class="text-slate-500 font-medium">Need help editing your letter?</span>
+              <button onclick="switchTab('mentors')" class="px-3 py-1.5 bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-lg shadow-xs transition-colors inline-flex items-center gap-1">
+                Ask a Mentor to Review <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="px-2.5 py-1 bg-sky-100 text-sky-700 font-bold text-xs rounded-md">Federal Government</span>
+                <i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900">FAFSA® Official Application</h3>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">Submit the Free Application for Federal Student Aid on StudentAid.gov. Mandatory for Pell Grants, Work-Study, and Direct Loans.</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs text-slate-500 font-medium">FAFSA School Code required</span>
+              <a href="https://studentaid.gov/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg shadow">Open StudentAid.gov</a>
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="px-2.5 py-1 bg-purple-100 text-purple-700 font-bold text-xs rounded-md">NYS State Grant</span>
+                <i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900">TAP (NYS Higher Education Services)</h3>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">Tuition Assistance Program for eligible NY residents attending approved colleges in New York State. Grants up to $5,665/year.</p>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs text-slate-500 font-medium">HESC Code needed</span>
+              <a href="https://www.hesc.ny.gov/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-lg shadow">Open NYS HESC TAP</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">Step-by-Step Aid Roadmap</h3>
+              <p class="text-xs text-slate-500">Check off completed steps to keep your financial aid application on track.</p>
+            </div>
+            <button onclick="resetChecklist()" class="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1">
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i> Reset Tasks
+            </button>
+          </div>
+          <div id="checklist-container" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- TAB 2: SCHOLARSHIPS -->
+      <section id="tab-scholarships" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900">Scholarship Finder & Tracker</h2>
+            <p class="text-xs text-slate-500 mt-1">Browse top grants and merit awards. Save ones you like to your personal tracking list.</p>
+          </div>
+        </div>
+        <div id="scholarships-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
+
+      <!-- TAB 3: COLLEGE MATCHER -->
+      <section id="tab-matcher" class="hidden space-y-6">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="filter" class="w-5 h-5 text-sky-600"></i>
+            <h2 class="text-lg font-bold text-slate-900">Filter Colleges by Your Profile</h2>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Your GPA Target</label>
+              <input type="number" step="0.1" id="filter-gpa" onchange="renderColleges()" value="3.2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Max In-State Tuition ($/yr)</label>
+              <input type="number" step="1000" id="filter-budget" onchange="renderColleges()" value="25000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Institution Type</label>
+              <select id="filter-type" onchange="renderColleges()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+                <option value="All">All Types</option>
+                <option value="Public">Public State / City</option>
+                <option value="Private">Private</option>
+                <option value="Community">2-Year / Community</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Search Keywords</label>
+              <input type="text" id="filter-search" onkeyup="renderColleges()" placeholder="Name, city, or major..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-sky-400">
+            </div>
+          </div>
+        </div>
+
+        <div id="colleges-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- TAB 4: MENTORS -->
+      <section id="tab-mentors" class="hidden space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="users" class="w-6 h-6 text-sky-600"></i>
+              Connect with Peer Mentors & Alumni
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Get 1-on-1 advice from current college students and alumni who recently navigated FAFSA and admissions.</p>
+          </div>
+          <div class="flex items-center gap-2 bg-sky-50 border border-sky-200 px-3 py-2 rounded-xl text-xs text-sky-800">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-sky-600"></i>
+            <span>All mentors verified with valid student ID & enrollment</span>
+          </div>
+        </div>
+
+        <div id="mentors-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
+
+      <!-- TAB 5: INTERNSHIPS -->
+      <section id="tab-internships" class="hidden space-y-6">
+        <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="briefcase" class="w-6 h-6 text-purple-600"></i>
+              High School & College Internships
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">Discover summer research programs, tech fellowships, paid internships, and volunteer leadership roles.</p>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-100 p-1 rounded-xl text-xs font-medium">
+            <button onclick="setInternshipFilter('All')" id="int-btn-All" class="px-3 py-1.5 rounded-lg bg-white shadow font-bold text-slate-900">All</button>
+            <button onclick="setInternshipFilter('High School')" id="int-btn-HS" class="px-3 py-1.5 rounded-lg text-slate-600">High School</button>
+            <button onclick="setInternshipFilter('College')" id="int-btn-College" class="px-3 py-1.5 rounded-lg text-slate-600">College Undergrad</button>
+          </div>
+        </div>
+
+        <div id="internships-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
+
+      <!-- TAB 6: AI ADVISOR CHAT -->
+      <section id="tab-advisor" class="hidden max-w-4xl mx-auto space-y-4">
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col h-[650px] overflow-hidden">
+          <div class="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-gradient-to-tr from-sky-400 to-purple-400 rounded-xl shadow">
+                <i data-lucide="sparkles" class="w-5 h-5 text-slate-950"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm">Next Step AI Advisor</h3>
+                <p class="text-[11px] text-slate-300">Always active & ready to help</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-50/50"></div>
+
+          <div class="p-2 bg-slate-100 border-t border-slate-200 flex gap-2 overflow-x-auto text-xs scrollbar-none">
+            <button onclick="sendQuickPrompt('How do I fill out FAFSA step-by-step?')" class="px-3 py-1.5 bg-white border border-slate-200 hover:border-sky-400 text-slate-700 rounded-full whitespace-nowrap">💡 How do I fill out FAFSA?</button>
+            <button onclick="sendQuickPrompt('Am I eligible for NY State TAP grant?')" class="px-3 py-1.5 bg-white border border-slate-200 hover:border-sky-400 text-slate-700 rounded-full whitespace-nowrap">🏛️ NY TAP Eligibility</button>
+            <button onclick="sendQuickPrompt('How do I write a financial aid appeal essay?')" class="px-3 py-1.5 bg-white border border-slate-200 hover:border-purple-400 text-slate-700 rounded-full whitespace-nowrap">✍️ Financial Aid Appeal Advice</button>
+          </div>
+
+          <div class="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+            <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') sendChatMessage()" placeholder="Ask a question about colleges, aid, essays, scholarships..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-sky-400">
+            <button onclick="sendChatMessage()" class="p-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl shadow">
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- DONATION MODAL -->
+  <div id="donate-modal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+      <div id="donate-form-content">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div class="flex items-center gap-2">
+            <div class="p-2 bg-purple-100 text-purple-600 rounded-xl">
+              <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-slate-900 text-base">Support Next Step</h3>
+              <p class="text-[11px] text-slate-500">Help keep college guidance 100% free for all students</p>
+            </div>
+          </div>
+          <button onclick="closeDonateModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="bg-purple-50 border border-purple-200/80 rounded-xl p-3 text-xs text-purple-900 mb-4 leading-relaxed">
+          <strong>Future Me, Future You, Future Now.</strong> Your contribution directly funds verified mentorship programs, free FAFSA workshops, and application resources for students.
+        </div>
+
+        <form onsubmit="submitDonateModal(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-2">Select Gift Amount</label>
+            <div class="grid grid-cols-4 gap-2 text-xs font-bold">
+              <button type="button" onclick="selectDonateAmount(5)" class="donate-amt-btn py-2.5 rounded-xl border border-slate-200 hover:border-purple-400 text-slate-700 hover:text-purple-600 transition-colors"> $5 </button>
+              <button type="button" onclick="selectDonateAmount(15)" class="donate-amt-btn py-2.5 rounded-xl border border-purple-500 bg-purple-50 text-purple-600"> $15 </button>
+              <button type="button" onclick="selectDonateAmount(25)" class="donate-amt-btn py-2.5 rounded-xl border border-slate-200 hover:border-purple-400 text-slate-700 hover:text-purple-600 transition-colors"> $25 </button>
+              <button type="button" onclick="selectDonateAmount(50)" class="donate-amt-btn py-2.5 rounded-xl border border-slate-200 hover:border-purple-400 text-slate-700 hover:text-purple-600 transition-colors"> $50 </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custom Amount ($)</label>
+            <input type="number" id="donate-custom-amount" min="1" placeholder="Enter amount" value="15" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 focus:outline-none focus:border-purple-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Donor Name (Optional)</label>
+            <input type="text" id="donate-name" placeholder="Anonymous or Your Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 focus:outline-none focus:border-purple-500">
+          </div>
+
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" onclick="closeDonateModal()" class="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl hover:bg-slate-200">Cancel</button>
+            <button type="submit" class="px-5 py-2 bg-gradient-to-r from-purple-500 to-sky-500 hover:from-purple-600 hover:to-sky-600 text-white text-xs font-semibold rounded-xl shadow flex items-center gap-1.5">
+              <i data-lucide="heart" class="w-3.5 h-3.5 fill-current"></i> Complete Donation
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div id="donate-success-content" class="hidden text-center py-6 space-y-3">
+        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto">
+          <i data-lucide="heart" class="w-7 h-7 fill-current"></i>
+        </div>
+        <h4 class="font-bold text-slate-900 text-base">Thank You for Your Support!</h4>
+        <p id="donate-thankyou-msg" class="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto">
+          Your generosity empowers students to take their next step toward higher education.
+        </p>
+        <button onclick="closeDonateModal()" class="px-5 py-2 bg-slate-800 text-white text-xs font-semibold rounded-xl">Back to App</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Modal -->
+  <div id="video-modal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl relative border border-slate-100 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 id="video-modal-title" class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <i data-lucide="video" class="w-5 h-5 text-sky-600"></i> Video Walkthrough
+        </h3>
+        <button onclick="closeVideoModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Video Player Frame Container -->
+      <div id="video-player-frame" class="w-full aspect-video bg-slate-900 rounded-xl flex items-center justify-center relative overflow-hidden">
+        <!-- Embedded video frame -->
+      </div>
+
+      <div id="video-modal-footer" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs pt-1">
+        <p id="video-modal-desc" class="text-slate-600 leading-relaxed max-w-xl"></p>
+        <a id="video-external-link" href="#" target="_blank" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-xl flex items-center gap-1.5 shrink-0">
+          Open on YouTube <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-100">
+        <button onclick="closeVideoModal()" class="px-4 py-2 bg-slate-800 text-white text-xs font-semibold rounded-xl">Close Video</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Mentor Connection -->
+  <div id="mentor-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+      <div id="modal-form-content">
+        <h3 id="modal-mentor-title" class="font-bold text-slate-900 text-base mb-1"></h3>
+        <p id="modal-mentor-sub" class="text-xs text-sky-600 font-semibold mb-4"></p>
+        <form onsubmit="submitMentorModal(event)" class="space-y-3">
+          <textarea required rows="3" id="modal-note" placeholder="Hi! I would love advice on college applications and financial aid essays..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-sky-400"></textarea>
+          <div class="flex justify-end gap-2">
+            <button type="button" onclick="closeMentorModal()" class="px-4 py-2 bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl">Cancel</button>
+            <button type="submit" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-xl shadow">Send Request</button>
+          </div>
+        </form>
+      </div>
+      <div id="modal-success-content" class="hidden text-center py-6 space-y-3">
+        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+          <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+        </div>
+        <h4 class="font-bold text-slate-900">Request Sent!</h4>
+        <p class="text-xs text-slate-500">Your mentor has received your prompt and will accept your invite shortly!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // App Data State
+    let currentUser = null;
+    let savedScholarships = ['sch-1', 'sch-3'];
+    let savedColleges = ['col-1', 'col-2'];
+    let savedInternships = ['int-1'];
+    let internshipAudience = 'All';
+
+    const checklistData = [
+      { id: 1, title: 'Create StudentAid.gov Account (FSA ID)', done: true, tag: 'FAFSA' },
+      { id: 2, title: 'Gather tax documents (Prior-Prior Year W-2 & 1040)', done: true, tag: 'FAFSA' },
+      { id: 3, title: 'Fill out FAFSA demographic info & add preferred schools', done: false, tag: 'FAFSA' },
+      { id: 4, title: 'Sign and submit FAFSA with student & parent FSA IDs', done: false, tag: 'FAFSA' },
+      { id: 5, title: 'Link to NYS TAP Application via FAFSA submission page', done: false, tag: 'TAP' },
+      { id: 6, title: 'Complete HESC TAP profile and confirm NYS school code', done: false, tag: 'TAP' },
+    ];
+
+    const collegesData = [
+      { id: 'col-1', name: 'State University - Main Campus', type: 'Public', location: 'New York, NY', minGpa: 2.8, annualTuition: 10500, acceptRate: '68%', satRange: '1050-1250', image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=600', majors: ['Computer Science', 'Business', 'Nursing'], desc: 'Top-tier public research university with excellent STEM programs.' },
+      { id: 'col-2', name: 'Metropolitan Tech Institute', type: 'Public', location: 'Buffalo, NY', minGpa: 3.2, annualTuition: 8900, acceptRate: '54%', satRange: '1180-1380', image: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=600', majors: ['Engineering', 'Data Science'], desc: 'Premier urban technology-focused university with co-op placement.' },
+      { id: 'col-3', name: 'Empire Liberal Arts College', type: 'Private', location: 'Saratoga Springs, NY', minGpa: 3.5, annualTuition: 38000, acceptRate: '35%', satRange: '1280-1450', image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=600', majors: ['Biology', 'Political Science'], desc: 'Prestigious private liberal arts college offering 100% need-met aid.' }
+    ];
+
+    const scholarshipsData = [
+      { id: 'sch-1', title: 'Future STEM Leaders Award', provider: 'National Science Tech Foundation', amount: 10000, deadline: '2026-11-15', minGpa: 3.2, major: 'STEM Fields', desc: 'Annual grant for high school seniors and undergrads pursuing computer science or engineering.', tags: ['STEM', 'Merit-based'] },
+      { id: 'sch-2', title: 'First-Gen Trailblazer Grant', provider: 'Opportunity Forward Fund', amount: 5000, deadline: '2026-12-01', minGpa: 2.7, major: 'Any Major', desc: 'Created for first-generation college applicants demonstrating strong leadership.', tags: ['First-Gen', 'Need-based'] },
+      { id: 'sch-3', title: 'New York TAP Enhancement Incentive', provider: 'NYS HESC Program', amount: 4000, deadline: '2027-01-30', minGpa: 2.5, major: 'Any Major', desc: 'State-level grant for qualified New York state residents staying in-state.', tags: ['State Grant', 'NYS Resident'] }
+    ];
+
+    const mentorsData = [
+      { id: 'men-1', name: 'Sarah Chen', school: 'Columbia University', major: 'Computer Science', role: 'Senior', status: 'available', waitTime: null, rating: 4.9, bio: 'First-gen student who navigated FAFSA & full-ride scholarships.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200', topics: ['FAFSA Guidance', 'CS Applications'] },
+      { id: 'men-2', name: 'Marcus Vance', school: 'NYU Stern', major: 'Finance & Econ', role: 'Graduate', status: 'busy', waitTime: '15 min wait', rating: 4.8, bio: 'Specialized in financial planning and scholarship essays.', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200', topics: ['Scholarship Essays', 'TAP Grants'] }
+    ];
+
+    const internshipsData = [
+      { id: 'int-1', title: 'Summer Youth Tech & Code Fellowship', org: 'Empire Tech Alliance', target: 'High School & College', pay: 'Paid Stipend ($2,000)', location: 'Remote / Hybrid', deadline: '2026-11-30', desc: '8-week software development program pairing students with mentors.' },
+      { id: 'int-2', title: 'Healthcare & Life Sciences Internship', org: 'Metropolitan Health', target: 'High School Seniors', pay: 'Paid ($18/hr)', location: 'In-Person (Buffalo)', deadline: '2026-12-15', desc: 'Shadowing in biomedical research labs for aspiring pre-med students.' }
+    ];
+
+    // Auth Screen Handlers
+    function setAuthMode(mode) {
+      document.getElementById('btn-mode-login').className = "py-2 font-medium rounded-lg transition-all " + (mode==='login'?"bg-sky-500 text-white shadow-md":"text-slate-400 hover:text-slate-200");
+      document.getElementById('btn-mode-signup').className = "py-2 font-medium rounded-lg transition-all " + (mode==='signup'?"bg-sky-500 text-white shadow-md":"text-slate-400 hover:text-slate-200");
+      document.getElementById('btn-mode-mentor').className = "py-2 font-medium rounded-lg transition-all " + (mode==='mentor'?"bg-purple-500 text-white font-bold shadow-md":"text-slate-400 hover:text-slate-200");
+
+      if (mode === 'mentor') {
+        document.getElementById('student-form').classList.add('hidden');
+        document.getElementById('mentor-form-container').classList.remove('hidden');
+        document.getElementById('mentor-success').classList.add('hidden');
+      } else {
+        document.getElementById('student-form').classList.remove('hidden');
+        document.getElementById('mentor-form-container').classList.add('hidden');
+        document.getElementById('mentor-success').classList.add('hidden');
+        document.getElementById('field-name').classList.toggle('hidden', mode === 'login');
+        document.getElementById('btn-auth-submit').querySelector('span').textContent = mode === 'login' ? 'Sign In to Next Step' : 'Take Your Next Step';
+      }
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      currentUser = {
+        name: document.getElementById('input-name').value || 'Student',
+        gpa: parseFloat(document.getElementById('input-gpa').value) || 3.4,
+        budget: parseInt(document.getElementById('input-budget').value) || 18000
+      };
+
+      document.getElementById('user-display-name').textContent = currentUser.name;
+      document.getElementById('user-display-gpa').textContent = currentUser.gpa;
+      document.getElementById('user-display-budget').textContent = '$' + currentUser.budget.toLocaleString() + '/yr';
+
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-dashboard').classList.remove('hidden');
+      
+      initDashboard();
+    }
+
+    function handleMentorSubmit(e) {
+      e.preventDefault();
+      document.getElementById('mentor-form-container').classList.add('hidden');
+      document.getElementById('mentor-success').classList.remove('hidden');
+    }
+
+    function updateFileName(input, labelId) {
+      if(input.files && input.files[0]) {
+        document.getElementById(labelId).textContent = input.files[0].name;
+      }
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      document.getElementById('app-dashboard').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+    }
+
+    // Donation Modal Functions
+    function openDonateModal() {
+      document.getElementById('donate-form-content').classList.remove('hidden');
+      document.getElementById('donate-success-content').classList.add('hidden');
+      document.getElementById('donate-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeDonateModal() {
+      document.getElementById('donate-modal').classList.add('hidden');
+    }
+
+    function selectDonateAmount(amt) {
+      document.getElementById('donate-custom-amount').value = amt;
+      const btns = document.querySelectorAll('.donate-amt-btn');
+      btns.forEach(btn => {
+        if (btn.textContent.trim() === '$' + amt) {
+          btn.className = 'donate-amt-btn py-2.5 rounded-xl border border-purple-500 bg-purple-50 text-purple-600 font-bold';
+        } else {
+          btn.className = 'donate-amt-btn py-2.5 rounded-xl border border-slate-200 hover:border-purple-400 text-slate-700 hover:text-purple-600 font-bold transition-colors';
+        }
+      });
+    }
+
+    function submitDonateModal(e) {
+      e.preventDefault();
+      const amt = document.getElementById('donate-custom-amount').value || '15';
+      const name = document.getElementById('donate-name').value.trim() || 'Generous Supporter';
+      
+      document.getElementById('donate-thankyou-msg').textContent = `Thank you, ${name}! Your contribution of $${amt} helps keep Next Step free, accessible, and supportive for students everywhere.`;
+      document.getElementById('donate-form-content').classList.add('hidden');
+      document.getElementById('donate-success-content').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // Dashboard Tab Switcher
+    function switchTab(tabName) {
+      ['fafsa', 'scholarships', 'matcher', 'mentors', 'internships', 'advisor'].forEach(t => {
+        document.getElementById('tab-' + t).classList.add('hidden');
+        document.getElementById('nav-' + t).className = "flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap";
+      });
+
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('nav-' + tabName).className = "flex items-center gap-2 py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 border-sky-400 text-sky-300 bg-sky-500/10 whitespace-nowrap";
+      
+      lucide.createIcons();
+    }
+
+    // Initialize Dashboard Elements
+    function initDashboard() {
+      renderChecklist();
+      renderScholarships();
+      renderColleges();
+      renderMentors();
+      renderInternships();
+      initAdvisorChat();
+      lucide.createIcons();
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist-container');
+      container.innerHTML = '';
+      let doneCount = 0;
+
+      checklistData.forEach(item => {
+        if(item.done) doneCount++;
+        const div = document.createElement('div');
+        div.className = `flex items-center gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${item.done ? 'bg-sage-100 border-sage-300 opacity-80' : 'bg-white border-slate-200'}`;
+        div.onclick = () => { item.done = !item.done; renderChecklist(); };
+        div.innerHTML = `
+          <div class="w-5 h-5 rounded-md flex items-center justify-center ${item.done ? 'bg-sage-600 text-white' : 'border border-slate-300'}">
+            ${item.done ? '<i data-lucide="check" class="w-3.5 h-3.5"></i>' : ''}
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded ${item.tag==='FAFSA'?'bg-sky-100 text-sky-800':'bg-purple-100 text-purple-800'}">${item.tag}</span>
+          <span class="text-sm font-medium ${item.done?'line-through text-slate-500':'text-slate-800'}">${item.title}</span>
+        `;
+        container.appendChild(div);
+      });
+
+      const pct = Math.round((doneCount / checklistData.length) * 100);
+      document.getElementById('checklist-progress-text').textContent = `${doneCount} of ${checklistData.length} Complete (${pct}%)`;
+      document.getElementById('checklist-progress-bar').style.width = pct + '%';
+      lucide.createIcons();
+    }
+
+    function resetChecklist() {
+      checklistData.forEach(i => i.done = false);
+      renderChecklist();
+    }
+
+    function renderScholarships() {
+      const grid = document.getElementById('scholarships-grid');
+      grid.innerHTML = '';
+      scholarshipsData.forEach(sch => {
+        const isSaved = savedScholarships.includes(sch.id);
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <span class="text-xs font-semibold text-sky-600 uppercase">${sch.provider}</span>
+                <h3 class="text-lg font-bold text-slate-900">${sch.title}</h3>
+              </div>
+              <button onclick="toggleSave('sch', '${sch.id}')" class="p-2 rounded-full ${isSaved?'bg-purple-50 text-purple-600':'bg-slate-100 text-slate-400'}">
+                <i data-lucide="bookmark" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 my-3 p-3 bg-slate-50 rounded-xl text-xs">
+              <div><span class="text-slate-400 block">Amount:</span><span class="font-bold text-sage-700">$${sch.amount.toLocaleString()}/yr</span></div>
+              <div><span class="text-slate-400 block">Deadline:</span><span class="font-semibold text-slate-700">${sch.deadline}</span></div>
+            </div>
+            <p class="text-xs text-slate-600 mb-4">${sch.desc}</p>
+          </div>
+          <button onclick="toggleSave('sch', '${sch.id}')" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg">${isSaved?'Saved':'Save Scholarship'}</button>
+        `;
+        grid.appendChild(card);
+      });
+      document.getElementById('saved-sch-count').textContent = savedScholarships.length;
+      lucide.createIcons();
+    }
+
+    function renderColleges() {
+      const grid = document.getElementById('colleges-grid');
+      grid.innerHTML = '';
+      collegesData.forEach(col => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <img src="${col.image}" class="h-40 w-full object-cover">
+            <div class="p-5">
+              <h3 class="font-bold text-slate-900 text-base">${col.name}</h3>
+              <p class="text-xs text-slate-500 mb-3">${col.location}</p>
+              <div class="grid grid-cols-2 gap-2 my-2 p-3 bg-slate-50 rounded-xl text-xs">
+                <div><span class="text-slate-400 block">Tuition:</span><span class="font-bold text-slate-800">$${col.annualTuition.toLocaleString()}/yr</span></div>
+                <div><span class="text-slate-400 block">Min GPA:</span><span class="font-bold text-slate-800">${col.minGpa}</span></div>
+              </div>
+              <p class="text-xs text-slate-600 mt-2">${col.desc}</p>
+            </div>
+          </div>
+          <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span class="font-semibold text-sage-700">✓ Profile Match</span>
+            <button class="text-sky-600 font-semibold">View Details</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function renderMentors() {
+      const grid = document.getElementById('mentors-grid');
+      grid.innerHTML = '';
+      mentorsData.forEach(men => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <img src="${men.avatar}" class="w-12 h-12 rounded-full object-cover">
+                <div>
+                  <h3 class="font-bold text-slate-900">${men.name}</h3>
+                  <p class="text-xs text-purple-600 font-semibold">${men.school}</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${men.status==='available'?'bg-sage-100 text-sage-800':'bg-amber-50 text-amber-700'}">
+                ${men.status==='available'?'Available':'Busy ('+men.waitTime+')'}
+              </span>
+            </div>
+            <p class="text-xs text-slate-600 mb-4">"${men.bio}"</p>
+          </div>
+          <button onclick="openMentorModal('${men.name}', '${men.school}')" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-xl">
+            Connect with ${men.name.split(' ')[0]}
+          </button>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function renderInternships() {
+      const grid = document.getElementById('internships-grid');
+      grid.innerHTML = '';
+      internshipsData.forEach(int => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <span class="text-xs font-bold text-purple-600 uppercase">${int.org}</span>
+            <h3 class="text-lg font-bold text-slate-900 mt-0.5">${int.title}</h3>
+            <div class="grid grid-cols-2 gap-2 my-3 p-3 bg-slate-50 rounded-xl text-xs">
+              <div><span class="text-slate-400 block">Target:</span><span class="font-semibold text-slate-800">${int.target}</span></div>
+              <div><span class="text-slate-400 block">Compensation:</span><span class="font-bold text-sage-700">${int.pay}</span></div>
+            </div>
+            <p class="text-xs text-slate-600 mb-4">${int.desc}</p>
+          </div>
+          <button class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold rounded-lg">Apply Opportunity</button>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function toggleSave(type, id) {
+      if(type === 'sch') {
+        savedScholarships = savedScholarships.includes(id) ? savedScholarships.filter(x=>x!==id) : [...savedScholarships, id];
+        renderScholarships();
+      }
+    }
+
+    // Working Video Player Modal Function with Youtube Privacy-Enhanced Embeds
+    function playVideo(type) {
+      const modal = document.getElementById('video-modal');
+      const title = document.getElementById('video-modal-title');
+      const desc = document.getElementById('video-modal-desc');
+      const playerFrame = document.getElementById('video-player-frame');
+      const extLink = document.getElementById('video-external-link');
+
+      if (type === 'fafsa') {
+        title.innerHTML = `<i data-lucide="video" class="w-5 h-5 text-sky-600"></i> FAFSA® Step-by-Step Video Walkthrough`;
+        desc.textContent = "Official Federal Student Aid walkthrough explaining how to set up your FSA ID account, fill out demographic & dependency questions, import IRS tax data, and select your college list.";
+        extLink.href = "https://www.youtube.com/watch?v=1fR3wYm4_kU";
+        
+        playerFrame.innerHTML = `
+          <iframe class="w-full h-full rounded-xl" src="https://www.youtube-nocookie.com/embed/1fR3wYm4_kU?autoplay=1&rel=0" title="FAFSA Walkthrough Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        `;
+      } else {
+        title.innerHTML = `<i data-lucide="video" class="w-5 h-5 text-purple-600"></i> New York TAP Grant Video Walkthrough`;
+        desc.textContent = "Official NYS Higher Education Services Corporation (HESC) guide for NY state high school seniors & undergrads linking FAFSA to the TAP application and verifying state residency.";
+        extLink.href = "https://www.youtube.com/watch?v=3vM-wK1q2yY";
+
+        playerFrame.innerHTML = `
+          <iframe class="w-full h-full rounded-xl" src="https://www.youtube-nocookie.com/embed/3vM-wK1q2yY?autoplay=1&rel=0" title="NYS TAP Walkthrough Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        `;
+      }
+
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('video-modal');
+      document.getElementById('video-player-frame').innerHTML = ''; // Stop video audio on close
+      modal.classList.add('hidden');
+    }
+
+    function openMentorModal(name, school) {
+      document.getElementById('modal-mentor-title').textContent = "Connect with " + name;
+      document.getElementById('modal-mentor-sub').textContent = school;
+      document.getElementById('modal-form-content').classList.remove('hidden');
+      document.getElementById('modal-success-content').classList.add('hidden');
+      document.getElementById('mentor-modal').classList.remove('hidden');
+    }
+
+    function closeMentorModal() {
+      document.getElementById('mentor-modal').classList.add('hidden');
+    }
+
+    function submitMentorModal(e) {
+      e.preventDefault();
+      document.getElementById('modal-form-content').classList.add('hidden');
+      document.getElementById('modal-success-content').classList.remove('hidden');
+      setTimeout(closeMentorModal, 2000);
+    }
+
+    // AI Chat Advisor Mock Logic
+    function initAdvisorChat() {
+      const box = document.getElementById('chat-messages');
+      box.innerHTML = `
+        <div class="flex flex-col items-start">
+          <div class="bg-white border border-slate-200 text-slate-800 rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-sm">
+            👋 Welcome to Next Step! I'm your AI College Advisor. Ask me anything about FAFSA, TAP grants, scholarships, or finding mentors!
+          </div>
+        </div>
+      `;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if(!text) return;
+
+      const box = document.getElementById('chat-messages');
+      box.innerHTML += `
+        <div class="flex flex-col items-end">
+          <div class="bg-sky-500 text-white rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-sm max-w-[80%]">
+            ${text}
+          </div>
+        </div>
+      `;
+      input.value = '';
+      box.scrollTop = box.scrollHeight;
+
+      setTimeout(() => {
+        let reply = "That's a great question! For FAFSA and TAP applications, make sure to watch our official Video Guides in the Aid tab and gather your tax forms. You can also check our new Essay Advice & Financial Aid Tips section or connect with one of our peer mentors!";
+        if(text.toLowerCase().includes('fafsa')) {
+          reply = "FAFSA (Free Application for Federal Student Aid) opens annually. You will need your FSA ID and tax documents to apply for federal grants and loans. Be sure to check our video tutorial and essay/appeal tips in the Aid tab!";
+        } else if(text.toLowerCase().includes('tap')) {
+          reply = "NYS TAP provides grant aid for eligible New York State residents attending participating in-state colleges. You can link directly from your FAFSA submission or watch our TAP video guide!";
+        } else if(text.toLowerCase().includes('essay') || text.toLowerCase().includes('appeal')) {
+          reply = "When writing a financial aid appeal or hardship essay, be specific about recent income changes, quantify your expenses with documentation, and remain positive about your college goals!";
+        }
+
+        box.innerHTML += `
+          <div class="flex flex-col items-start">
+            <div class="bg-white border border-slate-200 text-slate-800 rounded-2xl px-4 py-3 text-xs sm:text-sm shadow-sm max-w-[80%]">
+              ${reply}
+            </div>
+          </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+      }, 600);
+    }
+
+    function sendQuickPrompt(prompt) {
+      document.getElementById('chat-input').value = prompt;
+      sendChatMessage();
+    }
+  </script>
+</body>
+</html>
