@@ -73,7 +73,7 @@
 
         <div>
           <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Password</label>
-          <input type="password" required id="input-password" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="••••••••" value="password123">
+          <input type="password" required id="input-password" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-sky-400" placeholder="••••••••" value="demo1234">
         </div>
 
         <div class="grid grid-cols-2 gap-3 pt-1">
@@ -613,73 +613,86 @@
   </div>
 
   <script>
-    let currentUser = JSON.parse(localStorage.getItem('nextstep_user')) || null;
-    let savedScholarships = JSON.parse(localStorage.getItem('nextstep_saved_sch')) || ['sch-1', 'sch-3'];
-    let userPoints = parseInt(localStorage.getItem('nextstep_points')) || 200;
+    // [DB] All state now comes from the server (Postgres via /api/...), not localStorage.
+    // The data that used to be hard-coded here lives in the database (see seed.py).
+    let currentUser = null;
+    let savedScholarships = [];
+    let userPoints = 0;
     let selectedRedeemItem = null;
+    let selectedTutorId = null;   // [DB] which tutor the request modal is for
     let currentFilterAudience = 'All';
+    let authMode = 'login';       // [DB] 'login' or 'signup' (set by setAuthMode)
 
-    let checklistData = JSON.parse(localStorage.getItem('nextstep_checklist')) || [
-      { id: 1, title: 'Create StudentAid.gov Account (FSA ID)', done: true, tag: 'FAFSA' },
-      { id: 2, title: 'Gather tax documents (Prior-Prior Year W-2 & 1040)', done: true, tag: 'FAFSA' },
-      { id: 3, title: 'Fill out FAFSA demographic info & add preferred schools', done: false, tag: 'FAFSA' },
-      { id: 4, title: 'Sign and submit FAFSA with student & parent FSA IDs', done: false, tag: 'FAFSA' },
-      { id: 5, title: 'Link to NYS TAP Application via FAFSA submission page', done: false, tag: 'TAP' },
-      { id: 6, title: 'Complete HESC TAP profile and confirm NYS school code', done: false, tag: 'TAP' },
-    ];
+    let checklistData = [];
+    let rewardsData = [];
+    let scholarshipsData = [];
+    let collegesData = [];
+    let tutorsData = [];
+    let mentorsData = [];
+    let internshipsData = [];
 
-    const rewardsData = [
-      { id: 'rew-1', title: '$5 Amazon Gift Card', cost: 300, category: 'Gift Card', icon: 'credit-card', desc: 'Instant digital code for school supplies, books, or electronics.' },
-      { id: 'rew-2', title: '$5 Target Gift Card', cost: 300, category: 'Gift Card', icon: 'shopping-cart', desc: 'Digital code delivered directly to your email.' },
-      { id: 'rew-3', title: '$5 Starbucks Gift Card', cost: 300, category: 'Gift Card', icon: 'coffee', desc: 'Grab a coffee before your next study session or test prep practice.' },
-      { id: 'rew-4', title: 'Official College Pennant', cost: 500, category: 'Merch', icon: 'flag', desc: 'Custom felt pennant for Columbia, NYU, SUNY, or CUNY.' },
-      { id: 'rew-5', title: 'College Logo T-Shirt', cost: 800, category: 'Merch', icon: 'shirt', desc: '100% cotton official university t-shirt of your choice.' },
-      { id: 'rew-6', title: 'University Hoodie / Sweatshirt', cost: 1200, category: 'Merch', icon: 'package', desc: 'Heavyweight cozy college hoodie sent directly to your home.' }
-    ];
-
-    let scholarshipsData = JSON.parse(localStorage.getItem('nextstep_scholarships')) || [
-      { id: 'sch-1', title: 'Future STEM Leaders Award', provider: 'National Science Tech Foundation', amount: 10000, deadline: '2026-11-15', minGpa: 3.2, major: 'STEM Fields', desc: 'Annual grant for high school seniors and undergrads pursuing computer science or engineering.' },
-      { id: 'sch-2', title: 'First-Gen Trailblazer Grant', provider: 'Opportunity Forward Fund', amount: 5000, deadline: '2026-12-01', minGpa: 2.7, major: 'Any Major', desc: 'Created for first-generation college applicants demonstrating strong leadership.' },
-      { id: 'sch-3', title: 'New York TAP Enhancement Incentive', provider: 'NYS HESC Program', amount: 4000, deadline: '2027-01-30', minGpa: 2.5, major: 'Any Major', desc: 'State-level grant for qualified New York state residents staying in-state.' }
-    ];
-
-    const collegesData = [
-      { id: 'col-1', name: 'State University - Main Campus', type: 'Public', location: 'New York, NY', minGpa: 2.8, annualTuition: 10500, acceptRate: '68%', satRange: '1050-1250', image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=600', majors: ['Computer Science', 'Business', 'Nursing'], desc: 'Top-tier public research university with excellent STEM programs.' },
-      { id: 'col-2', name: 'Metropolitan Tech Institute', type: 'Public', location: 'Buffalo, NY', minGpa: 3.2, annualTuition: 8900, acceptRate: '54%', satRange: '1180-1380', image: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=600', majors: ['Engineering', 'Data Science'], desc: 'Premier urban technology-focused university with co-op placement.' },
-      { id: 'col-3', name: 'Empire Liberal Arts College', type: 'Private', location: 'Saratoga Springs, NY', minGpa: 3.5, annualTuition: 38000, acceptRate: '35%', satRange: '1280-1450', image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=600', majors: ['Biology', 'Political Science'], desc: 'Prestigious private liberal arts college offering 100% need-met aid.' }
-    ];
-
-    const tutorsData = [
-      { id: 'tut-1', name: 'David Kim', school: 'Cornell University', testScore: 'ACT: 36 (Perfect Math/Science)', rate: 'Free / Volunteer', bio: 'Scored a 36 on the ACT. Specializes in timing strategy for Science and advanced Math shortcuts.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', specialties: ['ACT Math & Science', 'SAT Math'] },
-      { id: 'tut-2', name: 'Maya Patel', school: 'Columbia University', testScore: 'SAT: 1570 (790 Reading/Writing)', rate: 'Free / Volunteer', bio: 'Raised my SAT score from 1310 to 1570. Expert in grammar rules and reading elimination techniques.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200', specialties: ['SAT Reading & Writing', 'ACT English'] },
-      { id: 'tut-3', name: 'Ethan Zhang', school: 'NYU Stern Alumni', testScore: 'ACT: 35 / SAT: 1540', rate: 'Volunteer / Mentorship', bio: 'Helped 15+ students score 32+ on ACT. Focuses on error analysis and pacing logs.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', specialties: ['Overall Pacing', 'Test Anxiety'] }
-    ];
-
-    const mentorsData = [
-      { id: 'men-1', name: 'Sarah Chen', school: 'Columbia University', major: 'Computer Science', status: 'available', bio: 'First-gen student who navigated FAFSA & full-ride scholarships.', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200' },
-      { id: 'men-2', name: 'Marcus Vance', school: 'NYU Stern', major: 'Finance & Econ', status: 'busy', bio: 'Specialized in financial planning and scholarship essays.', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200' }
-    ];
-
-    const internshipsData = [
-      { id: 'int-1', title: 'Summer Youth Tech Fellowship', org: 'Empire Tech Alliance', target: 'High School', pay: 'Paid ($2,000)', desc: '8-week software development program pairing students with mentors.' },
-      { id: 'int-2', title: 'Healthcare & Life Sciences Internship', org: 'Metropolitan Health', target: 'High School', pay: 'Paid ($18/hr)', desc: 'Shadowing in biomedical research labs for aspiring pre-med students.' },
-      { id: 'int-3', title: 'Data Analytics Undergraduate Co-Op', org: 'FinTech Solutions', target: 'College', pay: 'Paid ($25/hr)', desc: 'Full summer position for undergrads studying computer science or math.' }
-    ];
-
-    window.onload = function() {
-      if (currentUser) {
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('app-dashboard').classList.remove('hidden');
-        updateUserHeader();
-        initDashboard();
+    // [DB] Small JSON helper for the API. Throws an Error with the server's message on failure.
+    async function api(method, url, body) {
+      const opts = { method, headers: {}, credentials: 'same-origin' };
+      if (body !== undefined) {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(body);
       }
+      const res = await fetch(url, opts);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+      return data;
+    }
+
+    // [DB] Load every list the dashboard shows.
+    async function loadAllData() {
+      const [checklist, rewards, sch, colleges, tutors, mentors, internships] = await Promise.all([
+        api('GET', '/api/checklist'), api('GET', '/api/rewards'), api('GET', '/api/scholarships'),
+        api('GET', '/api/colleges'), api('GET', '/api/tutors'), api('GET', '/api/mentors'), api('GET', '/api/internships')
+      ]);
+      checklistData = checklist;
+      rewardsData = rewards;
+      scholarshipsData = sch.scholarships;
+      savedScholarships = sch.saved;
+      collegesData = colleges;
+      tutorsData = tutors;
+      mentorsData = mentors;
+      internshipsData = internships;
+    }
+
+    // [DB] Called after login/signup or when an existing session is found.
+    async function enterDashboard(user) {
+      currentUser = user;
+      userPoints = user.points;
+      await loadAllData();
+      updateUserHeader();
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-dashboard').classList.remove('hidden');
+      initDashboard();
+    }
+
+    // [DB] Use the server's point balance after any action that changes it.
+    function setPoints(pts) {
+      userPoints = pts;
+      updateUserHeader();
+      renderRewardsShop();
+    }
+
+    window.onload = async function() {
+      // [DB] Resume a signed-in session (cookie) instead of reading localStorage.
+      try {
+        const res = await api('GET', '/api/me');
+        if (res.user) await enterDashboard(res.user);
+      } catch (err) { console.error(err); }
     };
 
     function setAuthMode(mode) {
+      authMode = mode; // [DB]
       document.getElementById('btn-mode-login').className = "py-2 font-medium rounded-lg transition-all " + (mode==='login'?"bg-sky-500 text-white shadow-md":"text-slate-400 hover:text-slate-200");
       document.getElementById('btn-mode-signup').className = "py-2 font-medium rounded-lg transition-all " + (mode==='signup'?"bg-sky-500 text-white shadow-md":"text-slate-400 hover:text-slate-200");
       document.getElementById('btn-mode-mentor').className = "py-2 font-medium rounded-lg transition-all " + (mode==='mentor'?"bg-purple-500 text-white font-bold shadow-md":"text-slate-400 hover:text-slate-200");
 
+      document.getElementById('mentor-success').classList.add('hidden'); // [DB]
       if (mode === 'mentor') {
         document.getElementById('student-form').classList.add('hidden');
         document.getElementById('mentor-form-container').classList.remove('hidden');
@@ -690,20 +703,43 @@
       }
     }
 
-    function handleAuthSubmit(e) {
+    // [DB] Real sign in / student signup against the database.
+    async function handleAuthSubmit(e) {
       e.preventDefault();
-      currentUser = {
-        name: document.getElementById('input-name').value || 'Alex Rivera',
-        gpa: parseFloat(document.getElementById('input-gpa').value) || 3.4,
-        budget: parseInt(document.getElementById('input-budget').value) || 18000
-      };
+      const email = document.getElementById('input-email').value.trim();
+      const password = document.getElementById('input-password').value;
+      try {
+        let user;
+        if (authMode === 'signup') {
+          user = await api('POST', '/api/signup', {
+            name: document.getElementById('input-name').value.trim(),
+            email, password,
+            gpa: parseFloat(document.getElementById('input-gpa').value),
+            budget: parseInt(document.getElementById('input-budget').value)
+          });
+        } else {
+          user = await api('POST', '/api/login', { email, password });
+        }
+        await enterDashboard(user);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
 
-      localStorage.setItem('nextstep_user', JSON.stringify(currentUser));
-      updateUserHeader();
-
-      document.getElementById('auth-screen').classList.add('hidden');
-      document.getElementById('app-dashboard').classList.remove('hidden');
-      initDashboard();
+    // [DB] "Apply as Mentor/Tutor" form: saved as a pending application.
+    async function handleMentorSubmit(e) {
+      e.preventDefault();
+      const inputs = e.target.querySelectorAll('input');
+      try {
+        await api('POST', '/api/mentor-applications', {
+          name: inputs[0].value.trim(), university: inputs[1].value.trim(), major: inputs[2].value.trim()
+        });
+        e.target.reset();
+        document.getElementById('mentor-form-container').classList.add('hidden');
+        document.getElementById('mentor-success').classList.remove('hidden');
+      } catch (err) {
+        alert(err.message);
+      }
     }
 
     function updateUserHeader() {
@@ -714,15 +750,8 @@
       document.getElementById('rewards-balance-text').textContent = userPoints;
     }
 
-    function addPoints(pts) {
-      userPoints += pts;
-      localStorage.setItem('nextstep_points', userPoints);
-      updateUserHeader();
-      renderRewardsShop();
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('nextstep_user');
+    async function handleLogout() {
+      try { await api('POST', '/api/logout'); } catch (err) { console.error(err); } // [DB]
       currentUser = null;
       document.getElementById('app-dashboard').classList.add('hidden');
       document.getElementById('auth-screen').classList.remove('hidden');
@@ -739,13 +768,15 @@
       document.getElementById('profile-modal').classList.add('hidden');
     }
 
-    function saveProfileChanges(e) {
+    async function saveProfileChanges(e) {
       e.preventDefault();
-      currentUser.name = document.getElementById('edit-profile-name').value.trim();
-      currentUser.gpa = parseFloat(document.getElementById('edit-profile-gpa').value);
-      currentUser.budget = parseInt(document.getElementById('edit-profile-budget').value);
-
-      localStorage.setItem('nextstep_user', JSON.stringify(currentUser));
+      try { // [DB] save profile to the database
+        currentUser = await api('PUT', '/api/me', {
+          name: document.getElementById('edit-profile-name').value.trim(),
+          gpa: parseFloat(document.getElementById('edit-profile-gpa').value),
+          budget: parseInt(document.getElementById('edit-profile-budget').value)
+        });
+      } catch (err) { alert(err.message); return; }
       updateUserHeader();
       closeProfileModal();
       renderColleges();
@@ -784,10 +815,12 @@
         if(item.done) doneCount++;
         const div = document.createElement('div');
         div.className = `flex items-center gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${item.done ? 'bg-sage-100 border-sage-300 opacity-80' : 'bg-white border-slate-200'}`;
-        div.onclick = () => { 
-          item.done = !item.done;
-          if (item.done) addPoints(100);
-          localStorage.setItem('nextstep_checklist', JSON.stringify(checklistData));
+        div.onclick = async () => { // [DB] save progress; server awards the points
+          try {
+            const res = await api('PUT', '/api/checklist/' + item.id, { done: !item.done });
+            item.done = res.done;
+            setPoints(res.points);
+          } catch (err) { alert(err.message); }
           renderChecklist(); 
         };
         div.innerHTML = `
@@ -796,7 +829,7 @@
           </div>
           <span class="text-xs font-semibold px-2 py-0.5 rounded ${item.tag==='FAFSA'?'bg-sky-100 text-sky-800':'bg-purple-100 text-purple-800'}">${item.tag}</span>
           <span class="text-sm font-medium ${item.done?'line-through text-slate-500':'text-slate-800'}">${item.title}</span>
-          <span class="ml-auto text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">+100 PTS</span>
+          <span class="ml-auto text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">+${item.points} PTS</span>
         `;
         container.appendChild(div);
       });
@@ -807,9 +840,9 @@
       lucide.createIcons();
     }
 
-    function resetChecklist() {
+    async function resetChecklist() {
+      try { await api('POST', '/api/checklist/reset'); } catch (err) { alert(err.message); return; } // [DB]
       checklistData.forEach(i => i.done = false);
-      localStorage.setItem('nextstep_checklist', JSON.stringify(checklistData));
       renderChecklist();
     }
 
@@ -858,12 +891,18 @@
       document.getElementById('redeem-modal').classList.add('hidden');
     }
 
-    function submitRedeemModal(e) {
+    async function submitRedeemModal(e) {
       e.preventDefault();
       if (!selectedRedeemItem || userPoints < selectedRedeemItem.cost) return;
 
-      userPoints -= selectedRedeemItem.cost;
-      localStorage.setItem('nextstep_points', userPoints);
+      try { // [DB] record the redemption; server deducts the points
+        const res = await api('POST', '/api/redemptions', {
+          reward_id: selectedRedeemItem.id,
+          address: document.getElementById('redeem-address').value.trim(),
+          option: document.getElementById('redeem-option').value
+        });
+        userPoints = res.points;
+      } catch (err) { alert(err.message); return; }
       updateUserHeader();
 
       document.getElementById('redeem-form-content').classList.add('hidden');
@@ -928,7 +967,7 @@
               ${tut.specialties.map(s => `<span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-medium">${s}</span>`).join('')}
             </div>
           </div>
-          <button onclick="openTutorModal('${tut.name}', '${tut.school}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl">
+          <button onclick="openTutorModal('${tut.name}', '${tut.school}', '${tut.id}')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl">
             Request Tutoring with ${tut.name.split(' ')[0]} (+100 PTS)
           </button>
         `;
@@ -937,7 +976,8 @@
       lucide.createIcons();
     }
 
-    function openTutorModal(name, school) {
+    function openTutorModal(name, school, tutorId) {
+      selectedTutorId = tutorId; // [DB]
       document.getElementById('modal-tutor-title').textContent = "Request Tutoring with " + name;
       document.getElementById('modal-tutor-sub').textContent = school;
       document.getElementById('tutor-form-content').classList.remove('hidden');
@@ -949,9 +989,15 @@
       document.getElementById('tutor-modal').classList.add('hidden');
     }
 
-    function submitTutorModal(e) {
+    async function submitTutorModal(e) {
       e.preventDefault();
-      addPoints(100);
+      try { // [DB] save the tutoring request; server awards +100 points
+        const res = await api('POST', '/api/mentor-requests', {
+          mentor_id: selectedTutorId, type: 'act_sat_tutoring',
+          notes: document.getElementById('modal-tutor-note').value.trim()
+        });
+        setPoints(res.points);
+      } catch (err) { alert(err.message); return; }
       document.getElementById('tutor-form-content').classList.add('hidden');
       document.getElementById('tutor-success-content').classList.remove('hidden');
       setTimeout(closeTutorModal, 2000);
@@ -965,10 +1011,9 @@
       document.getElementById('add-sch-modal').classList.add('hidden');
     }
 
-    function saveCustomScholarship(e) {
+    async function saveCustomScholarship(e) {
       e.preventDefault();
       const newSch = {
-        id: 'sch-' + Date.now(),
         title: document.getElementById('new-sch-title').value.trim(),
         provider: document.getElementById('new-sch-provider').value.trim(),
         amount: parseInt(document.getElementById('new-sch-amount').value),
@@ -976,9 +1021,11 @@
         desc: document.getElementById('new-sch-desc').value.trim()
       };
 
-      scholarshipsData.unshift(newSch);
-      addPoints(50);
-      localStorage.setItem('nextstep_scholarships', JSON.stringify(scholarshipsData));
+      try { // [DB] save the custom scholarship; server awards +50 points
+        const res = await api('POST', '/api/scholarships', newSch);
+        scholarshipsData.unshift(res.scholarship);
+        setPoints(res.points);
+      } catch (err) { alert(err.message); return; }
       renderScholarships();
       closeAddScholarshipModal();
     }
@@ -1101,12 +1148,14 @@
       lucide.createIcons();
     }
 
-    function toggleSave(type, id) {
+    async function toggleSave(type, id) {
       if(type === 'sch') {
         const previouslySaved = savedScholarships.includes(id);
+        try { // [DB] save/unsave in the database; server awards +50 when saving
+          const res = await api(previouslySaved ? 'DELETE' : 'POST', '/api/scholarships/' + encodeURIComponent(id) + '/save');
+          setPoints(res.points);
+        } catch (err) { alert(err.message); return; }
         savedScholarships = previouslySaved ? savedScholarships.filter(x=>x!==id) : [...savedScholarships, id];
-        if (!previouslySaved) addPoints(50);
-        localStorage.setItem('nextstep_saved_sch', JSON.stringify(savedScholarships));
         renderScholarships();
       }
     }
